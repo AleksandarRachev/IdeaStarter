@@ -11,7 +11,6 @@ public class ShowUserDto {
     private long id;
     private String firstName;
     private String lastName;
-    private int age;
-    private String username;
+    private String email;
     private String imageUrl;
 }

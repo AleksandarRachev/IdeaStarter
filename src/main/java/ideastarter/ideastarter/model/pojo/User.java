@@ -1,5 +1,6 @@
 package ideastarter.ideastarter.model.pojo;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -21,10 +22,11 @@ public class User {
     private String lastName;
     @Column(name = "password",nullable = false)
     private String password;
-    @Column(name = "age",nullable = false)
-    private Integer age;
-    @Column(name = "username",unique = true,nullable = false,length = 100)
-    private String username;
+    @Column(name = "email",unique = true,nullable = false,length = 100)
+    private String email;
     @Column(name = "image_url")
     private String imageUrl;
+    @Column(name = "admin")
+    private boolean admin;
+
 }

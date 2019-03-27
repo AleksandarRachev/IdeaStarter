@@ -1,19 +1,18 @@
 package ideastarter.ideastarter.controller;
-
 import ideastarter.ideastarter.model.dto.ShowUserDto;
-import ideastarter.ideastarter.model.dto.UserLoginDto;
 import ideastarter.ideastarter.model.pojo.User;
 import ideastarter.ideastarter.repository.UserRepository;
 import ideastarter.ideastarter.util.SuccessMessage;
 import ideastarter.ideastarter.util.exception.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import javax.validation.Valid;
+import java.io.IOException;
 import java.time.LocalDate;
 
 @RestController
@@ -24,36 +23,56 @@ public class UserController extends BaseController{
     private UserRepository userRepository;
 
     @PostMapping(value = "/register")
-    public SuccessMessage registerUser(@Valid @RequestBody User user, HttpSession session) throws MissingValuableFieldsException, UserExistsException {
-        if(user.getAge()==null || user.getUsername()==null || user.getPassword()==null || user.getFirstName()==null || user.getLastName()==null){
+    public SuccessMessage registerUser(HttpSession session, HttpServletRequest request, HttpServletResponse response) throws BaseException {
+        String email = request.getParameter("email");
+        checkEmail(email);
+        String password = request.getParameter("password");
+        String password2 = request.getParameter("password2");
+        String firstName = request.getParameter("firstName");
+        String lastName = request.getParameter("lastName");
+        if(email.isEmpty() || password.isEmpty() || password2.isEmpty() || firstName.isEmpty() || lastName.isEmpty()){
             throw new MissingValuableFieldsException();
         }
-        int count = this.userRepository.countUserByUsername(user.getUsername());
-        if(count>0){
+        int count = this.userRepository.countUserByEmail(email);
+        if(count>0) {
             throw new UserExistsException();
         }
-        this.userRepository.save(user);
-        session.setMaxInactiveInterval(60*60);
-        session.setAttribute("user",user);
-        return new SuccessMessage("Register successful", LocalDate.now());
+        if(!password.equals(password2)){
+            response.setStatus(400);
+            throw new PasswordsNotMatchingException();
+        }
+        User user = new User();
+        user.setLastName(lastName);
+        user.setFirstName(firstName);
+        user.setEmail(email);
+        user.setPassword(password);
+            userRepository.save(user);
+            request.getSession().setAttribute("logged",true);
+            session.setMaxInactiveInterval((60*60));
+            return new SuccessMessage("Register successful",LocalDate.now());
     }
 
     @PostMapping(value = "/login")
-    public ShowUserDto loginUser(@Valid @RequestBody UserLoginDto login, HttpSession session) throws BaseException {
-        if(login.getUsername()==null || login.getPassword()==null||login.getPassword2()==null){
+    public ShowUserDto loginUser(HttpSession session,HttpServletRequest request) throws BaseException{
+        String email = request.getParameter("email");
+        String password = request.getParameter("password");
+        if(email.isEmpty() || password.isEmpty()){
             throw new MissingValuableFieldsException();
         }
-        if(!login.getPassword().equals(login.getPassword2())){
-            throw new PasswordsNotMatchingException();
-        }
-        int count = userRepository.countUserByUsername(login.getUsername());
-        User user = userRepository.findByUsername(login.getUsername());
-        if(count<1 || !user.getPassword().equals(login.getPassword())){
+        int count = userRepository.countUserByEmail(email);
+        User user = userRepository.findByEmail(email);
+        if(count<1 || !user.getPassword().equals(password)){
             throw new WrongCredentialsException();
         }
         session.setMaxInactiveInterval(60*60);
         session.setAttribute("user",user);
-        return new ShowUserDto(user.getId(),user.getFirstName(),user.getLastName(),user.getAge(),user.getUsername(),user.getImageUrl());
+        return new ShowUserDto(user.getId(),user.getFirstName(),user.getLastName(),user.getEmail(),user.getImageUrl());
+    }
+    private void checkEmail(String email) throws EmailInvalidFormatException {
+        String emailRegex = "([A-Za-z0-9-_.]+@[A-Za-z0-9-_]+(?:\\.[A-Za-z]+)+)";
+        if (!email.matches(emailRegex)) {
+            throw new EmailInvalidFormatException();
+        }
     }
 
 }
