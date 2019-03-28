@@ -126,11 +126,9 @@ button {
 	border: none;
 	background: transparent;
 }
-
 button:hover {
 	cursor: pointer;
 }
-
 iframe {
 	border: none !important;
 }
@@ -385,7 +383,6 @@ iframe {
   display: flex;
   flex-wrap: wrap;
 }
-
 .login100-form-btn {
   font-family: Raleway-Bold;
   font-size: 16px;
@@ -410,7 +407,6 @@ iframe {
   -moz-transition: all 0.4s;
   transition: all 0.4s;
 }
-
 .login100-form-btn:hover {
   background-color: #57b846;
 }
