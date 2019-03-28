@@ -1,11 +1,13 @@
 package ideastarter.ideastarter.model.pojo;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @Getter
 @Setter
@@ -15,7 +17,8 @@ import javax.persistence.*;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    @Column(name = "id")
+    private Long id;
     @Column(name = "first_name",nullable = false)
     private String firstName;
     @Column(name = "last_name",nullable = false)
@@ -26,7 +29,9 @@ public class User {
     private String email;
     @Column(name = "image_url")
     private String imageUrl;
-    @Column(name = "admin")
+    @Column(name = "admin",nullable = false,columnDefinition = "boolean default false")
     private boolean admin;
+    @OneToMany(mappedBy = "user")
+    private List<Post> posts;
 
 }

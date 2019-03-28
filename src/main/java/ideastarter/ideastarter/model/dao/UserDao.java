@@ -1,5 +1,6 @@
 package ideastarter.ideastarter.model.dao;
 
+import ideastarter.ideastarter.model.dto.ShowUserDto;
 import ideastarter.ideastarter.model.pojo.User;
 import ideastarter.ideastarter.util.exception.ImageMissingException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,22 @@ public class UserDao {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
+    public ShowUserDto getUserById(long id) throws SQLException {
+        ShowUserDto showUser = new ShowUserDto();
+        try(Connection connection = jdbcTemplate.getDataSource().getConnection()){
+            PreparedStatement ps = connection.prepareStatement("SELECT id,first_name,last_name,email,image_url FROM users WHERE id = ?");
+            ps.setLong(1,id);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()){
+                showUser.setId(rs.getLong(1));
+                showUser.setFirstName(rs.getString(2));
+                showUser.setLastName(rs.getString(3));
+                showUser.setEmail(rs.getString(4));
+                showUser.setImageUrl(rs.getString(5));
+            }
+        }
+        return showUser;
+    }
     public void addImageUrl(String dir,String imageUrl,long userId) throws SQLException {
         Connection connection = null;
         try{
