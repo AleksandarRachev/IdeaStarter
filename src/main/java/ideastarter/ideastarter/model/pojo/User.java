@@ -3,10 +3,9 @@ package ideastarter.ideastarter.model.pojo;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -32,6 +31,6 @@ public class User {
     @Column(name = "admin",nullable = false,columnDefinition = "boolean default false")
     private boolean admin;
     @OneToMany(mappedBy = "user")
-    private List<Post> posts;
+    private List<Post> posts = new ArrayList<>();
 
 }

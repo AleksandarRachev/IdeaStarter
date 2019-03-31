@@ -6,8 +6,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "posts")
@@ -23,24 +23,19 @@ public class Post {
     private String title;
     @Column(name = "description",nullable = false)
     private String description;
-//    @Column(name = "start_date",nullable = false)
-//    @JsonDeserialize(using = LocalDateDeserializer.class)
-//    @JsonSerialize(using = LocalDateSerializer.class)
-//    private LocalDate startDate;
-//    @Column(name = "end_date",nullable=false)
-//    @JsonDeserialize(using = LocalDateDeserializer.class)
-//    @JsonSerialize(using = LocalDateSerializer.class)
-//    private LocalDate endDate;
     @Column(nullable = false)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
     private Date startDate;
     @Column(nullable = false)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
     private Date endDate;
-//    @OneToOne
-//    @NotNull
-//    private User user;
+    @Column(name = "donates")
+    private Double donates;
     @ManyToOne
     private User user;
+    @OneToMany(mappedBy = "post")
+    private List<PostUpdate> postUpdates;
+    @OneToMany(mappedBy = "post")
+    private List<Comment> comments;
 
 }
