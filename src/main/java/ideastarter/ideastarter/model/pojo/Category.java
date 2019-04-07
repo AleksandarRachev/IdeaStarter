@@ -6,20 +6,17 @@ import lombok.Setter;
 
 import javax.persistence.*;
 
+@Entity
+@Table(name = "categories")
 @Getter
 @Setter
 @NoArgsConstructor
-@Entity
-@Table(name = "comments")
-public class Comment {
+public class Category {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
     private Long id;
-    @Column(name = "comment",nullable = false)
-    private String comment;
-    @ManyToOne
-    private Post post;
-    @OneToOne
-    private User user;
+    @Column(name = "name",nullable = false)
+    private String name;
+
 }

@@ -37,5 +37,7 @@ public class Post {
     private List<PostUpdate> postUpdates;
     @OneToMany(mappedBy = "post")
     private List<Comment> comments;
+    @OneToOne
+    private Category category;
 
 }

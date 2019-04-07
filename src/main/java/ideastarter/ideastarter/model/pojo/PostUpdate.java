@@ -24,5 +24,7 @@ public class PostUpdate {
     private Date postDate;
     @ManyToOne
     private Post post;
+    @OneToOne
+    private User user;
 
 }
