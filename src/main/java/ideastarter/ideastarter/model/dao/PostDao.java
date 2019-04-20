@@ -1,6 +1,7 @@
 package ideastarter.ideastarter.model.dao;
 
 import ideastarter.ideastarter.model.dto.ShowPostDto;
+import ideastarter.ideastarter.model.dto.ShowPostNoUserDto;
 import ideastarter.ideastarter.model.pojo.Post;
 import ideastarter.ideastarter.model.pojo.User;
 import ideastarter.ideastarter.repository.UserRepository;
@@ -37,6 +38,26 @@ public class PostDao {
                 post.setStartDate(rs.getDate(4));
                 post.setEndDate(rs.getDate(5));
                 post.setUser(dao.getUserById(user.getId()));
+                posts.add(post);
+            }
+        }
+        return posts;
+    }
+
+    public List<ShowPostNoUserDto> getAllPosts() throws SQLException {
+        List<ShowPostNoUserDto> posts = new ArrayList<>();
+        try(Connection connection = this.jdbcTemplate.getDataSource().getConnection()){
+            PreparedStatement ps = connection.prepareStatement("SELECT id,title,description,start_date,end_date,donates,user_id FROM posts");
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()){
+                ShowPostNoUserDto post = new ShowPostNoUserDto();
+                post.setId(rs.getLong(1));
+                post.setTitle(rs.getString(2));
+                post.setDescription(rs.getString(3));
+                post.setStartDate(rs.getDate(4));
+                post.setEndDate(rs.getDate(5));
+                post.setDonates(rs.getDouble(6));
+                post.setUser(dao.getUserById(rs.getLong(7)));
                 posts.add(post);
             }
         }
