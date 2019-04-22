@@ -2,6 +2,7 @@ package ideastarter.ideastarter.controller;
 
 import ideastarter.ideastarter.model.dao.PostDao;
 import ideastarter.ideastarter.model.dao.UserDao;
+import ideastarter.ideastarter.model.dto.CategoryDto;
 import ideastarter.ideastarter.model.dto.ShowPostDto;
 import ideastarter.ideastarter.model.dto.ShowPostNoUserDto;
 import ideastarter.ideastarter.model.dto.ShowUserDto;
@@ -53,6 +54,11 @@ public class PostController extends BaseController{
     public List<ShowPostNoUserDto> getAllPosts(HttpServletResponse response, HttpServletRequest request) throws SQLException {
         response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
         return postDao.getAllPosts();
+    }
+    @GetMapping(value = "/categories")
+    public List<CategoryDto> getCategories(HttpServletResponse response, HttpServletRequest request) throws SQLException {
+        response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
+        return postDao.getCategories();
     }
 
 }

@@ -1,7 +1,9 @@
 package ideastarter.ideastarter.model.dao;
 
+import ideastarter.ideastarter.model.dto.CategoryDto;
 import ideastarter.ideastarter.model.dto.ShowPostDto;
 import ideastarter.ideastarter.model.dto.ShowPostNoUserDto;
+import ideastarter.ideastarter.model.pojo.Category;
 import ideastarter.ideastarter.model.pojo.Post;
 import ideastarter.ideastarter.model.pojo.User;
 import ideastarter.ideastarter.repository.UserRepository;
@@ -62,6 +64,21 @@ public class PostDao {
             }
         }
         return posts;
+    }
+
+    public List<CategoryDto> getCategories() throws SQLException {
+        List<CategoryDto> categories = new ArrayList<>();
+        try(Connection connection = this.jdbcTemplate.getDataSource().getConnection()){
+            PreparedStatement ps = connection.prepareStatement("SELECT id,name FROM categories");
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()){
+                CategoryDto dto = new CategoryDto();
+                dto.setId(rs.getLong(1));
+                dto.setName(rs.getString(2));
+                categories.add(dto);
+            }
+        }
+        return categories;
     }
 
 }
