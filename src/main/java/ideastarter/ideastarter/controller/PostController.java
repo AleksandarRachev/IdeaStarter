@@ -1,11 +1,13 @@
 package ideastarter.ideastarter.controller;
 
+import ideastarter.ideastarter.model.dao.CategoryDao;
 import ideastarter.ideastarter.model.dao.PostDao;
 import ideastarter.ideastarter.model.dao.UserDao;
 import ideastarter.ideastarter.model.dto.CategoryDto;
 import ideastarter.ideastarter.model.dto.ShowPostDto;
 import ideastarter.ideastarter.model.dto.ShowPostNoUserDto;
 import ideastarter.ideastarter.model.dto.ShowUserDto;
+import ideastarter.ideastarter.model.pojo.Category;
 import ideastarter.ideastarter.model.pojo.Post;
 import ideastarter.ideastarter.model.pojo.User;
 import ideastarter.ideastarter.repository.PostRepository;
@@ -18,6 +20,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -29,16 +34,35 @@ public class PostController extends BaseController{
     private PostDao postDao;
     @Autowired
     private UserDao userDao;
+    @Autowired
+    private CategoryDao categoryDao;
 
     @PostMapping
-    public ShowPostDto addPost(@RequestBody Post post, HttpSession session) throws BaseException, SQLException {
+    public ShowPostDto addPost(HttpServletRequest request,HttpSession session) throws BaseException, SQLException, ParseException {
         validateLogin(session);
+        Post post = new Post();
         User user = (User)session.getAttribute("user");
-        int count = postRepository.countPostByTitle(post.getTitle());
-        if(count>0){
+        int count = postDao.countPostsByTitle(request.getParameter("title"));
+        if(count > 0){
             throw new PostExistsException();
         }
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String title = request.getParameter("title");
+        String description = request.getParameter("description");
+        String categoryName = request.getParameter("category");
+        Date startDate = simpleDateFormat.parse(request.getParameter("startDate"));
+        Date endDate = simpleDateFormat.parse(request.getParameter("endDate"));
+        if(startDate.after(endDate)){
+            throw new BaseException("Wrong date");
+        }
+        Category category = categoryDao.getCategoryIdByName(categoryName);
+        post.setTitle(title);
+        post.setDescription(description);
+        post.setStartDate(startDate);
+        post.setEndDate(endDate);
+        post.setCategory(category);
         post.setUser(user);
+
         postRepository.save(post);
         ShowUserDto showUser = userDao.getUserById(user.getId());
         return new ShowPostDto(post.getId(),post.getTitle(),post.getDescription(),post.getStartDate(),post.getEndDate(),showUser);

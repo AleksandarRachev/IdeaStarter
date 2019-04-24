@@ -44,33 +44,33 @@
 					</div>
 					<div class="col-md-4 col-md-pull-7">
 						<div class="booking-form">
-							<form>
+							<form action="/posts" method="post">
 								<div class="form-group">
 									<span class="form-label">Title</span>
-									<input class="form-control" type="text" placeholder="Title" required>
+									<input class="form-control" type="text" placeholder="Title" name="title" required>
 								</div>
 								<div class="form-group">
 									<span class="form-label">Description</span>
-									<textarea class="form-textarea" placeholder="Short summary for your idea" required></textarea>
+									<textarea class="form-textarea" placeholder="Short summary for your idea" name="description" required></textarea>
 								</div>
 								<div class="row">
 									<div class="col-sm-6">
 										<div class="form-group">
-											<span class="form-label">Start</span>
-											<input class="form-control" type="date" required>
+											<span class="form-label" >Start</span>
+											<input id="from" class="form-control" name="startDate" type="date" required>
 										</div>
 									</div>
 									<div class="col-sm-6">
 										<div class="form-group">
-											<span class="form-label">End</span>
-											<input class="form-control" type="date" required>
+											<span class="form-label" >End</span>
+											<input id="to" class="form-control" name="endDate" type="date" required>
 										</div>
 									</div>
 								</div>
 								<div class="col-sm-4">
 									<div class="form-group">
 										<span class="form-label">Category</span>
-										<select class="form-control" id="mySelect" required>
+										<select class="form-control" id="mySelect" name="category" required>
 											<option></option>
 											<script src="add-post/script/script.js"></script>
 										</select>
@@ -78,7 +78,7 @@
 									</div>
 								</div><br>
 								<div class="form-btn">
-									<button class="submit-btn">Post</button>
+									<button onclick="compareDates()" class="submit-btn">Post</button>
 								</div>
 							</form>
 						</div>

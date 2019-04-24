@@ -81,4 +81,17 @@ public class PostDao {
         return categories;
     }
 
+    public int countPostsByTitle(String title) throws SQLException {
+        try(Connection connection = jdbcTemplate.getDataSource().getConnection()){
+            PreparedStatement ps = connection.prepareStatement("SELECT COUNT(*) FROM posts WHERE title LIKE ?");
+            ps.setString(1,title);
+            ResultSet rs = ps.executeQuery();
+            int count = 0;
+            if(rs.next()){
+                count = rs.getInt(1);
+            }
+            return count;
+        }
+    }
+
 }
