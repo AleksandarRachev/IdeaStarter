@@ -23,7 +23,7 @@ public class UserController extends BaseController{
     private UserRepository userRepository;
 
     @PostMapping(value = "/register")
-    public SuccessMessage registerUser(HttpSession session, HttpServletRequest request, HttpServletResponse response) throws BaseException {
+    public SuccessMessage register(HttpSession session, HttpServletRequest request, HttpServletResponse response) throws BaseException {
         String email = request.getParameter("email");
         checkEmail(email);
         String password = request.getParameter("password");
@@ -53,7 +53,7 @@ public class UserController extends BaseController{
     }
 
     @PostMapping(value = "/login")
-    public ShowUserDto loginUser(HttpSession session,HttpServletRequest request) throws BaseException{
+    public ShowUserDto login(HttpSession session,HttpServletRequest request) throws BaseException{
         String email = request.getParameter("email");
         String password = request.getParameter("password");
         if(email.isEmpty() || password.isEmpty()){
@@ -68,11 +68,19 @@ public class UserController extends BaseController{
         session.setAttribute("user",user);
         return new ShowUserDto(user.getId(),user.getFirstName(),user.getLastName(),user.getEmail(),user.getImageUrl());
     }
+
     private void checkEmail(String email) throws EmailInvalidFormatException {
         String emailRegex = "([A-Za-z0-9-_.]+@[A-Za-z0-9-_]+(?:\\.[A-Za-z]+)+)";
         if (!email.matches(emailRegex)) {
             throw new EmailInvalidFormatException();
         }
+    }
+
+    @PostMapping(value = "/logout")
+    public String logoutUser(HttpSession session) throws NotLoggedException {
+        validateLogin(session);
+        session.invalidate();
+        return "You logged out";
     }
 
 }

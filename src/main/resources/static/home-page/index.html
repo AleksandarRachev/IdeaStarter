@@ -14,10 +14,13 @@
 				<div class="inner">
 					<a href="index.html" class="logo"><strong>IdeaStarter</strong> HOMEPAGE</a>
 					<nav id="nav">
-						<a href="index.html">Home</a>
-						<a href="posts.html">Posts</a>
-						<a href="element.html">Add idea</a>
-						<a href="/login/login.html">Log in</a>
+						<form id="myForm" action="/users/logout" method="post">
+							<a href="index.html">Home</a>
+							<a href="posts.html">Posts</a>
+							<a href="element.html">Add idea</a>
+							<a href="/login/login.html">Log in</a>
+							<a onmouseover="" style="cursor:pointer;" onclick="document.getElementById('myForm').submit()">Log out</a>
+						</form>
 					</nav>
 					<a href="#navPanel" class="navPanelToggle"><span class="fa fa-bars"></span></a>
 				</div>
@@ -54,7 +57,7 @@
 					</div>
 
 					<footer>
-						<a href="/register/register.html" class="button">Get Started</a>
+						<a href="/home-page/posts.html" class="button">Get Started</a>
 					</footer>
 				</div>
 			</section>

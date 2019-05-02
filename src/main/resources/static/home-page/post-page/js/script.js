@@ -10,7 +10,6 @@ window.addEventListener('DOMContentLoaded', function() {
                         const data = JSON.parse(xhr.responseText);
                         for(var i = 0;i<data.length;i++){
                         const content = `<div class="container">
-
                                              <div class="row">
 
                                                  <div class="col-lg-8">
@@ -41,7 +40,7 @@ window.addEventListener('DOMContentLoaded', function() {
                                                          <div class="card-body">
                                                              <form>
                                                                  <div class="form-group">
-                                                                     <textarea class="form-control" rows="3"></textarea>
+                                                                     <textarea class="form-control" style="resize:none" rows="3"></textarea>
                                                                  </div>
                                                                  <button type="submit" class="btn btn-primary">Submit</button>
                                                              </form>

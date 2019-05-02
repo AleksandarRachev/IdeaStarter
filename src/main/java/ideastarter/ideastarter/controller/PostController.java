@@ -12,6 +12,7 @@ import ideastarter.ideastarter.model.pojo.Post;
 import ideastarter.ideastarter.model.pojo.User;
 import ideastarter.ideastarter.repository.PostRepository;
 import ideastarter.ideastarter.util.exception.BaseException;
+import ideastarter.ideastarter.util.exception.NotLoggedException;
 import ideastarter.ideastarter.util.exception.PostExistsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -75,7 +76,7 @@ public class PostController extends BaseController{
     }
 
     @GetMapping(value = "/all")
-    public List<ShowPostNoUserDto> getAllPosts(HttpServletResponse response, HttpServletRequest request) throws SQLException {
+    public List<ShowPostNoUserDto> getAllPosts(HttpSession session, HttpServletResponse response, HttpServletRequest request) throws SQLException{
         response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
         return postDao.getAllPosts();
     }
