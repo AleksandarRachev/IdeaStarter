@@ -73,13 +73,22 @@
 									<div class="col-sm-6">
 										<div class="form-group">
 											<span class="form-label" >Start</span>
-											<input id="from" class="form-control" name="startDate" type="date" required>
-										</div>
-									</div>
-									<div class="col-sm-6">
-										<div class="form-group">
+											<input id="startDate" class="form-control" name="startDate" type="date" required/>
 											<span class="form-label" >End</span>
-											<input id="to" class="form-control" name="endDate" type="date" required>
+											<input id="endDate" class="form-control" name="endDate" type="date" required onblur="compare();"/>
+											<script>
+												function compare() {
+													var startDt = document.getElementById("startDate").value;
+													var endDt = document.getElementById("endDate").value;
+
+													if( (new Date(startDt).getTime() > new Date(endDt).getTime()))
+													{
+														alert("Wrong date");
+														document.getElementById("startDate").valueAsDate = null;
+														document.getElementById("endDate").valueAsDate = null;
+													}
+												}
+											</script>
 										</div>
 									</div>
 								</div>
@@ -94,7 +103,7 @@
 									</div>
 								</div><br>
 								<div class="form-btn">
-									<button onclick="compareDates()" class="submit-btn">Post</button>
+									<button class="submit-btn">Post</button>
 								</div>
 							</form>
 						</div>
