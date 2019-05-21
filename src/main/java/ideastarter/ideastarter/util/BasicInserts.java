@@ -36,18 +36,18 @@ public class BasicInserts {
     @EventListener
     public void appReady(ApplicationReadyEvent event) throws SQLException {
         User user = new User();
-        user.setLastName("admin");
         user.setFirstName("admin");
+        user.setLastName("admin");
         user.setEmail("admin@abv.bg");
-        user.setPassword("123");
+        user.setPassword(PasswordEncoder.hashPassword("admin"));
         user.setAdmin(true);
         userRepository.save(user);
 
         User user1 = new User();
-        user1.setLastName("Sasho");
-        user1.setFirstName("Minchev");
+        user1.setFirstName("Sasho");
+        user1.setLastName("Minchev");
         user1.setEmail("sasho@abv.bg");
-        user1.setPassword("123");
+        user1.setPassword(PasswordEncoder.hashPassword("123"));
         userRepository.save(user1);
 
         Category category = new Category();

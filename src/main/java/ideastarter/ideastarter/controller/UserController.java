@@ -2,9 +2,11 @@ package ideastarter.ideastarter.controller;
 import ideastarter.ideastarter.model.dto.ShowUserDto;
 import ideastarter.ideastarter.model.pojo.User;
 import ideastarter.ideastarter.repository.UserRepository;
+import ideastarter.ideastarter.util.PasswordEncoder;
 import ideastarter.ideastarter.util.SuccessMessage;
 import ideastarter.ideastarter.util.exception.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -45,7 +47,7 @@ public class UserController extends BaseController{
         user.setLastName(lastName);
         user.setFirstName(firstName);
         user.setEmail(email);
-        user.setPassword(password);
+        user.setPassword(PasswordEncoder.hashPassword(password));
             userRepository.save(user);
             request.getSession().setAttribute("logged",true);
             session.setMaxInactiveInterval((60*60));
@@ -61,9 +63,10 @@ public class UserController extends BaseController{
         }
         int count = userRepository.countUserByEmail(email);
         User user = userRepository.findByEmail(email);
-        if(count<1 || !user.getPassword().equals(password)){
+        if(count<1 || !BCrypt.checkpw(password,user.getPassword())) {
             throw new WrongCredentialsException();
         }
+
         session.setMaxInactiveInterval(60*60);
         session.setAttribute("user",user);
         return new ShowUserDto(user.getId(),user.getFirstName(),user.getLastName(),user.getEmail(),user.getImageUrl());

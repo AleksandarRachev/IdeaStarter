@@ -20,9 +20,9 @@ public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "title",unique = true,nullable = false)
+    @Column(unique = true,nullable = false)
     private String title;
-    @Column(name = "description",nullable = false)
+    @Column(nullable = false)
     private String description;
     @Column()
     @Type(type = "date")
@@ -31,7 +31,6 @@ public class Post {
     @Column()
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
     private Date endDate;
-    @Column(name = "donates")
     private Double donates;
     @ManyToOne
     private User user;

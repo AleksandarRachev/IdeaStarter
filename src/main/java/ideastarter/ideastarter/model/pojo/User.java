@@ -22,13 +22,13 @@ public class User {
     private String firstName;
     @Column(name = "last_name",nullable = false)
     private String lastName;
-    @Column(name = "password",nullable = false)
+    @Column(nullable = false)
     private String password;
-    @Column(name = "email",unique = true,nullable = false,length = 100)
+    @Column(unique = true,nullable = false,length = 100)
     private String email;
     @Column(name = "image_url")
     private String imageUrl;
-    @Column(name = "admin",nullable = false,columnDefinition = "boolean default false")
+    @Column(nullable = false,columnDefinition = "boolean default false")
     private boolean admin;
     @OneToMany(mappedBy = "user")
     private List<Post> posts = new ArrayList<>();
