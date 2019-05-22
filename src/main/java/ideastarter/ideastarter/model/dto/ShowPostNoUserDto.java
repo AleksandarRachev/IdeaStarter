@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
@@ -22,4 +23,5 @@ public class ShowPostNoUserDto {
     private Date endDate;
     private Double donates;
     private ShowUserDto user;
+    private List<ShowCommentDto> comments;
 }

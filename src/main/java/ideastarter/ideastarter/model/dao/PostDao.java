@@ -25,6 +25,8 @@ public class PostDao {
     private JdbcTemplate jdbcTemplate;
     @Autowired
     private UserDao dao;
+    @Autowired
+    private CommentDao commentDao;
 
     public List<ShowPostDto> getPostsFromUser(User user) throws SQLException {
         List<ShowPostDto> posts = new ArrayList<>();
@@ -60,6 +62,7 @@ public class PostDao {
                 post.setEndDate(rs.getDate(5));
                 post.setDonates(rs.getDouble(6));
                 post.setUser(dao.getUserById(rs.getLong(7)));
+                post.setComments(commentDao.getAllCommentsForPost(rs.getLong(1)));
                 posts.add(post);
             }
         }

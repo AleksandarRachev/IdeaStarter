@@ -25,7 +25,7 @@ public class UserController extends BaseController{
     private UserRepository userRepository;
 
     @PostMapping(value = "/register")
-    public SuccessMessage register(HttpSession session, HttpServletRequest request, HttpServletResponse response) throws BaseException {
+    public SuccessMessage register(HttpSession session, HttpServletRequest request) throws BaseException {
         String email = request.getParameter("email");
         checkEmail(email);
         String password = request.getParameter("password");
@@ -40,7 +40,6 @@ public class UserController extends BaseController{
             throw new UserExistsException();
         }
         if(!password.equals(password2)){
-            response.setStatus(400);
             throw new PasswordsNotMatchingException();
         }
         User user = new User();
@@ -48,10 +47,10 @@ public class UserController extends BaseController{
         user.setFirstName(firstName);
         user.setEmail(email);
         user.setPassword(PasswordEncoder.hashPassword(password));
-            userRepository.save(user);
-            request.getSession().setAttribute("logged",true);
-            session.setMaxInactiveInterval((60*60));
-            return new SuccessMessage("Register successful",LocalDate.now());
+        userRepository.save(user);
+        request.getSession().setAttribute("user",user);
+        session.setMaxInactiveInterval((60*60));
+        return new SuccessMessage("Register successful",LocalDate.now());
     }
 
     @PostMapping(value = "/login")
