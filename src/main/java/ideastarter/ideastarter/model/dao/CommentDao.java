@@ -17,6 +17,8 @@ public class CommentDao {
 
     @Autowired
     private JdbcTemplate template;
+    @Autowired
+    private UserDao userDao;
 
     public List<ShowCommentDto> getAllCommentsForPost(long id) throws SQLException {
         List<ShowCommentDto> comments = new ArrayList<>();
@@ -28,7 +30,7 @@ public class CommentDao {
                 ShowCommentDto comment = new ShowCommentDto();
                 comment.setId(rs.getLong(1));
                 comment.setComment(rs.getString(2));
-                comment.setUserId(rs.getLong(3));
+                comment.setUser(userDao.getUserById(rs.getLong(3)));
                 comment.setPostId(rs.getLong(4));
                 comments.add(comment);
             }

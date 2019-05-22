@@ -49,8 +49,8 @@ window.addEventListener('DOMContentLoaded', function() {
                                                      <div class="media mb-4">
                                                          <img class="d-flex mr-3 rounded-circle" src="http://placehold.it/50x50" alt="">
                                                          <div class="media-body">
-                                                             <h5 class="mt-0">Commenter Name</h5>
-                                                             <p>Comment </p>
+                                                             <h5 class="mt-0">Commenter Name: ${data[i].comments[0].user.firstName + " " + data[i].comments[0].user.lastName}</h5>
+                                                             <p>Comment: ${data[i].comments[0].comment}</p>
                                                          </div>
                                                      </div>
                                                  </div>
