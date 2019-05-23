@@ -23,5 +23,4 @@ public class ShowPostNoUserDto {
     private Date endDate;
     private Double donates;
     private ShowUserDto user;
-    private List<ShowCommentDto> comments;
 }

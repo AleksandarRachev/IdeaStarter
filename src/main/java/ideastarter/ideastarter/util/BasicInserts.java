@@ -98,6 +98,12 @@ public class BasicInserts {
         comment1.setPost(postRepository.findByTitle("Second post"));
         comment1.setUser(userRepository.findByEmail("admin@abv.bg"));
         commentRepository.save(comment1);
+
+        Comment comment2 = new Comment();
+        comment2.setComment("Second comment by user");
+        comment2.setPost(postRepository.findByTitle("Second post"));
+        comment2.setUser(userRepository.findByEmail("sasho@abv.bg"));
+        commentRepository.save(comment2);
     }
 
 }
