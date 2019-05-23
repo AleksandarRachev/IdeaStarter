@@ -37,4 +37,14 @@ public class CommentDao {
         }
         return comments;
     }
+
+    public void putCommentOnPost(String comment,long postId,long userId) throws SQLException {
+        try (Connection connection = template.getDataSource().getConnection()) {
+            PreparedStatement ps = connection.prepareStatement("INSERT INTO comments (comment,post_id,user_id) VALUES (?,?,?);");
+            ps.setString(1, comment);
+            ps.setLong(2,postId);
+            ps.setLong(3,userId);
+            ps.execute();
+        }
+    }
 }
