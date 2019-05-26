@@ -11,6 +11,7 @@ import ideastarter.ideastarter.model.pojo.Category;
 import ideastarter.ideastarter.model.pojo.Post;
 import ideastarter.ideastarter.model.pojo.User;
 import ideastarter.ideastarter.repository.PostRepository;
+import ideastarter.ideastarter.util.SuccessMessage;
 import ideastarter.ideastarter.util.exception.BaseException;
 import ideastarter.ideastarter.util.exception.NotLoggedException;
 import ideastarter.ideastarter.util.exception.PostExistsException;
@@ -23,8 +24,10 @@ import javax.servlet.http.HttpSession;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping(value = "/posts",produces = {"application/json"})
@@ -84,6 +87,25 @@ public class PostController extends BaseController{
     public List<CategoryDto> getCategories(HttpServletResponse response, HttpServletRequest request) throws SQLException {
         response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
         return postDao.getCategories();
+    }
+
+    @PostMapping(value = "/donate/{id}")
+    public SuccessMessage donateToPost(@PathVariable("id") Long postId,HttpServletRequest request) throws SQLException {
+        ShowPostNoUserDto post = postDao.getPostById(postId);
+        double donate = Double.parseDouble(request.getParameter("donate"));
+        System.out.println(donate);
+        System.out.println(post.getDonates());
+        post.setDonates(post.getDonates()+donate);
+        System.out.println(post.getDonates());
+        Post post1 = new Post();
+        post1.setId(post.getId());
+        post1.setDonates(post.getDonates());
+        post1.setTitle(post.getTitle());
+        post1.setDescription(post.getDescription());
+        post1.setStartDate(post.getStartDate());
+        post1.setEndDate(post.getEndDate());
+        postRepository.save(post1);
+        return new SuccessMessage("Donate successful", LocalDate.now());
     }
 
 }

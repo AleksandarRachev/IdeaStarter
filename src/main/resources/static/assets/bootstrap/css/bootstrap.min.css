@@ -1918,7 +1918,6 @@ pre code {
 
 .form-control {
     display: block;
-    width: 100%;
     resize: none;
     height: calc(2.25rem + 2px);
     padding: .375rem .75rem;

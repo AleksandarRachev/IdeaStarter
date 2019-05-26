@@ -96,4 +96,22 @@ public class PostDao {
         }
     }
 
+    public ShowPostNoUserDto getPostById(long postId) throws SQLException {
+        try(Connection connection = jdbcTemplate.getDataSource().getConnection()){
+            PreparedStatement ps = connection.prepareStatement("SELECT id,title,description,start_date,end_date,donates FROM posts WHERE id = ?");
+            ps.setLong(1,postId);
+            ResultSet rs = ps.executeQuery();
+            ShowPostNoUserDto post = new ShowPostNoUserDto();
+            if(rs.next()){
+                post.setId(rs.getLong(1));
+                post.setTitle(rs.getString(2));
+                post.setDescription(rs.getString(3));
+                post.setStartDate(rs.getDate(4));
+                post.setEndDate(rs.getDate(5));
+                post.setDonates(rs.getDouble(6));
+            }
+            return post;
+        }
+    }
+
 }
