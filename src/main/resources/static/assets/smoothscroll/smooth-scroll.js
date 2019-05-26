@@ -1,30 +1,13 @@
-//
-// SmoothScroll for websites v1.4.5 (Balazs Galambosi)
-// http://www.smoothscroll.net/
-//
-// Licensed under the terms of the MIT license.
-//
-// You may use it in your theme if you credit me.
-// It is also free to use on any individual website.
-//
-// Exception:
-// The only restriction is to not publish any
-// extension for browsers or native application
-// without getting a written permission first.
-//
+
 
 (function () {
 
-// Scroll Variables (tweakable)
 var defaultOptions = {
 
-    // Scrolling Core
     frameRate        : 150, // [Hz]
     animationTime    : 400, // [ms]
     stepSize         : 100, // [px]
 
-    // Pulse (less tweakable)
-    // ratio of "tail" to "acceleration"
     pulseAlgorithm   : true,
     pulseScale       : 4,
     pulseNormalize   : 1,
@@ -46,7 +29,6 @@ var defaultOptions = {
 var options = defaultOptions;
 
 
-// Other Variables
 var isExcluded = false;
 var isFrame = false;
 var direction = { x: 0, y: 0 };
@@ -62,22 +44,12 @@ var key = { left: 37, up: 38, right: 39, down: 40, spacebar: 32,
             pageup: 33, pagedown: 34, end: 35, home: 36 };
 var arrowKeys = { 37: 1, 38: 1, 39: 1, 40: 1 };
 
-/***********************************************
- * INITIALIZE
- ***********************************************/
-
-/**
- * Tests if smooth scrolling is allowed. Shuts down everything if not.
- */
 function initTest() {
     if (options.keyboardSupport) {
         addEvent('keydown', keydown);
     }
 }
 
-/**
- * Sets up scrolls array, determines if frames are involved.
- */
 function init() {
 
     if (initDone || !document.body) return;
@@ -100,12 +72,6 @@ function init() {
         isFrame = true;
     }
 
-    /**
-     * Safari 10 fixed it, Chrome fixed it in v45:
-     * This fixes a bug where the areas left and right to
-     * the content does not trigger the onmousewheel event
-     * on some pages. e.g.: html, body { height: 100% }
-     */
     else if (isOldSafari &&
              scrollHeight > windowHeight &&
             (body.offsetHeight <= windowHeight ||
@@ -158,9 +124,6 @@ function init() {
     }
 }
 
-/**
- * Removes event listeners and other traces left on the page.
- */
 function cleanup() {
     observer && observer.disconnect();
     removeEvent(wheelEvent, wheel);
@@ -170,18 +133,10 @@ function cleanup() {
     removeEvent('load', init);
 }
 
-
-/************************************************
- * SCROLLING
- ************************************************/
-
 var que = [];
 var pending = false;
 var lastScroll = Date.now();
 
-/**
- * Pushes scroll actions to the scrolling queue.
- */
 function scrollArray(elem, left, top) {
 
     directionCheck(left, top);
@@ -200,7 +155,6 @@ function scrollArray(elem, left, top) {
         lastScroll = Date.now();
     }
 
-    // push a scroll command
     que.push({
         x: left,
         y: top,
@@ -209,7 +163,6 @@ function scrollArray(elem, left, top) {
         start: Date.now()
     });
 
-    // don't act if there's a pending queue
     if (pending) {
         return;
     }
@@ -280,15 +233,6 @@ function scrollArray(elem, left, top) {
     pending = true;
 }
 
-
-/***********************************************
- * EVENTS
- ***********************************************/
-
-/**
- * Mouse wheel handler.
- * @param {Object} event
- */
 function wheel(event) {
 
     if (!initDone) {
@@ -297,8 +241,6 @@ function wheel(event) {
 
     var target = event.target;
 
-    // leave early if default action is prevented
-    // or it's a zooming event with CTRL
     if (event.defaultPrevented || event.ctrlKey) {
         return true;
     }
@@ -368,25 +310,15 @@ function wheel(event) {
     scheduleClearCache();
 }
 
-/**
- * Keydown event handler.
- * @param {Object} event
- */
 function keydown(event) {
 
     var target   = event.target;
     var modifier = event.ctrlKey || event.altKey || event.metaKey ||
                   (event.shiftKey && event.keyCode !== key.spacebar);
 
-    // our own tracked active element could've been removed from the DOM
     if (!document.body.contains(activeElement)) {
         activeElement = document.activeElement;
     }
-
-    // do nothing if user is editing text
-    // or using a modifier key (except shift)
-    // or in a dropdown
-    // or inside interactive elements
     var inputNodeNames = /^(textarea|select|embed|object)$/i;
     var buttonTypes = /^(button|submit|radio|checkbox|file|color|image)$/i;
     if ( event.defaultPrevented ||
@@ -466,18 +398,9 @@ function keydown(event) {
     event.preventDefault();
     scheduleClearCache();
 }
-
-/**
- * Mousedown event only for updating activeElement
- */
 function mousedown(event) {
     activeElement = event.target;
 }
-
-
-/***********************************************
- * OVERFLOW
- ***********************************************/
 
 var uniqueID = (function () {
     var i = 0;
@@ -486,10 +409,9 @@ var uniqueID = (function () {
     };
 })();
 
-var cache = {}; // cleared out after a scrolling session
+var cache = {};
 var clearCacheTimer;
 
-//setInterval(function () { cache = {}; }, 10 * 1000);
 
 function scheduleClearCache() {
     clearTimeout(clearCacheTimer);
@@ -501,13 +423,6 @@ function setCache(elems, overflowing) {
         cache[uniqueID(elems[i])] = overflowing;
     return overflowing;
 }
-
-//  (body)                (root)
-//         | hidden | visible | scroll |  auto  |
-// hidden  |   no   |    no   |   YES  |   YES  |
-// visible |   no   |   YES   |   YES  |   YES  |
-// scroll  |   no   |   YES   |   YES  |   YES  |
-// auto    |   no   |   YES   |   YES  |   YES  |
 
 function overflowingAncestor(el) {
     var elems = [];
@@ -547,11 +462,6 @@ function overflowAutoOrScroll(el) {
     var overflow = getComputedStyle(el, '').getPropertyValue('overflow-y');
     return (overflow === 'scroll' || overflow === 'auto');
 }
-
-
-/***********************************************
- * HELPERS
- ***********************************************/
 
 function addEvent(type, fn) {
     window.addEventListener(type, fn, false);
@@ -658,17 +568,6 @@ var getScrollRoot = (function() {
   };
 })();
 
-
-/***********************************************
- * PULSE (by Michael Herf)
- ***********************************************/
-
-/**
- * Viscous fluid with a pulse for part and decay for the rest.
- * - Applies a fixed force over an interval (a damped acceleration), and
- * - Lets the exponential bleed away the velocity over a longer interval
- * - Michael Herf, http://stereopsis.com/stopping/
- */
 function pulse_(x) {
     var val, start, expx;
     // test
@@ -695,12 +594,6 @@ function pulse(x) {
     }
     return pulse_(x);
 }
-
-
-/***********************************************
- * FIRST RUN
- ***********************************************/
-
 var userAgent = window.navigator.userAgent;
 var isEdge    = /Edge/.test(userAgent); // thank you MS
 var isChrome  = /chrome/i.test(userAgent) && !isEdge;
@@ -721,11 +614,6 @@ if (wheelEvent && isEnabledForBrowser) {
     addEvent('mousedown', mousedown);
     addEvent('load', init);
 }
-
-
-/***********************************************
- * PUBLIC INTERFACE
- ***********************************************/
 
 function SmoothScroll(optionsToSet) {
     for (var key in optionsToSet)

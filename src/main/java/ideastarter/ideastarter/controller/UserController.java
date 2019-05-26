@@ -1,4 +1,5 @@
 package ideastarter.ideastarter.controller;
+
 import ideastarter.ideastarter.model.dto.ShowUserDto;
 import ideastarter.ideastarter.model.pojo.User;
 import ideastarter.ideastarter.repository.UserRepository;
@@ -12,14 +13,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.io.IOException;
 import java.time.LocalDate;
 
 @RestController
 @RequestMapping(value = "/users")
-public class UserController extends BaseController{
+public class UserController extends BaseController {
 
     @Autowired
     private UserRepository userRepository;
@@ -32,14 +31,14 @@ public class UserController extends BaseController{
         String password2 = request.getParameter("password2");
         String firstName = request.getParameter("firstName");
         String lastName = request.getParameter("lastName");
-        if(email.isEmpty() || password.isEmpty() || password2.isEmpty() || firstName.isEmpty() || lastName.isEmpty()){
+        if (email.isEmpty() || password.isEmpty() || password2.isEmpty() || firstName.isEmpty() || lastName.isEmpty()) {
             throw new MissingValuableFieldsException();
         }
         int count = this.userRepository.countUserByEmail(email);
-        if(count>0) {
+        if (count > 0) {
             throw new UserExistsException();
         }
-        if(!password.equals(password2)){
+        if (!password.equals(password2)) {
             throw new PasswordsNotMatchingException();
         }
         User user = new User();
@@ -48,27 +47,27 @@ public class UserController extends BaseController{
         user.setEmail(email);
         user.setPassword(PasswordEncoder.hashPassword(password));
         userRepository.save(user);
-        request.getSession().setAttribute("user",user);
-        session.setMaxInactiveInterval((60*60));
-        return new SuccessMessage("Register successful",LocalDate.now());
+        request.getSession().setAttribute("user", user);
+        session.setMaxInactiveInterval((60 * 60));
+        return new SuccessMessage("Register successful", LocalDate.now());
     }
 
     @PostMapping(value = "/login")
-    public ShowUserDto login(HttpSession session,HttpServletRequest request) throws BaseException{
+    public ShowUserDto login(HttpSession session, HttpServletRequest request) throws BaseException {
         String email = request.getParameter("email");
         String password = request.getParameter("password");
-        if(email.isEmpty() || password.isEmpty()){
+        if (email.isEmpty() || password.isEmpty()) {
             throw new MissingValuableFieldsException();
         }
         int count = userRepository.countUserByEmail(email);
         User user = userRepository.findByEmail(email);
-        if(count<1 || !BCrypt.checkpw(password,user.getPassword())) {
+        if (count < 1 || !BCrypt.checkpw(password, user.getPassword())) {
             throw new WrongCredentialsException();
         }
 
-        session.setMaxInactiveInterval(60*60);
-        session.setAttribute("user",user);
-        return new ShowUserDto(user.getId(),user.getFirstName(),user.getLastName(),user.getEmail(),user.getImageUrl());
+        session.setMaxInactiveInterval(60 * 60);
+        session.setAttribute("user", user);
+        return new ShowUserDto(user.getId(), user.getFirstName(), user.getLastName(), user.getEmail(), user.getImageUrl());
     }
 
     private void checkEmail(String email) throws EmailInvalidFormatException {

@@ -20,11 +20,11 @@ public class UserDao {
 
     public ShowUserDto getUserById(long id) throws SQLException {
         ShowUserDto showUser = new ShowUserDto();
-        try(Connection connection = jdbcTemplate.getDataSource().getConnection()){
+        try (Connection connection = jdbcTemplate.getDataSource().getConnection()) {
             PreparedStatement ps = connection.prepareStatement("SELECT id,first_name,last_name,email,image_url FROM users WHERE id = ?");
-            ps.setLong(1,id);
+            ps.setLong(1, id);
             ResultSet rs = ps.executeQuery();
-            if (rs.next()){
+            if (rs.next()) {
                 showUser.setId(rs.getLong(1));
                 showUser.setFirstName(rs.getString(2));
                 showUser.setLastName(rs.getString(3));
@@ -34,50 +34,49 @@ public class UserDao {
         }
         return showUser;
     }
-    public void addImageUrl(String dir,String imageUrl,long userId) throws SQLException {
+
+    public void addImageUrl(String dir, String imageUrl, long userId) throws SQLException {
         Connection connection = null;
-        try{
-            connection  = jdbcTemplate.getDataSource().getConnection();
+        try {
+            connection = jdbcTemplate.getDataSource().getConnection();
             connection.setAutoCommit(false);
             PreparedStatement ps = connection.prepareStatement("SELECT image_url FROM users WHERE id = ?");
-            ps.setLong(1,userId);
+            ps.setLong(1, userId);
             ResultSet rs = ps.executeQuery();
-            if(rs.next()){
-                File file = new File(dir+rs.getString(1));
+            if (rs.next()) {
+                File file = new File(dir + rs.getString(1));
                 file.delete();
             }
             PreparedStatement putImage = connection.prepareStatement("UPDATE users SET image_url = ? WHERE id = ?");
-            putImage.setString(1,imageUrl);
-            putImage.setLong(2,userId);
+            putImage.setString(1, imageUrl);
+            putImage.setLong(2, userId);
             putImage.executeUpdate();
             connection.commit();
-        }
-        catch (SQLException e){
+        } catch (SQLException e) {
             connection.rollback();
             throw new SQLException();
-        }
-        finally {
+        } finally {
             connection.setAutoCommit(true);
             connection.close();
         }
     }
 
     public String getImageUrl(long userId) throws SQLException {
-        try(Connection connection = jdbcTemplate.getDataSource().getConnection()){
+        try (Connection connection = jdbcTemplate.getDataSource().getConnection()) {
             PreparedStatement ps = connection.prepareStatement("SELECT image_url FROM users WHERE id = ?");
-            ps.setLong(1,userId);
+            ps.setLong(1, userId);
             ResultSet rs = ps.executeQuery();
-            if(rs.next()) {
+            if (rs.next()) {
                 return rs.getString(1);
-            }
-            else{
+            } else {
                 return null;
             }
         }
     }
+
     public void deleteImage(String dir, User user) throws ImageMissingException, SQLException {
         Connection connection = jdbcTemplate.getDataSource().getConnection();
-        if(connection!=null) {
+        if (connection != null) {
             try {
                 connection.setAutoCommit(false);
                 PreparedStatement ps = connection.prepareStatement("UPDATE users SET image_url = NULL WHERE id = ?");

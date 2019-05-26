@@ -18,9 +18,9 @@ public class PostUpdate {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
-    @Column(name = "update_notes",nullable = false)
+    @Column(name = "update_notes", nullable = false)
     private String updateNotes;
-    @Column(name = "post_date",nullable = false)
+    @Column(name = "post_date", nullable = false)
     private Date postDate;
     @ManyToOne
     private Post post;

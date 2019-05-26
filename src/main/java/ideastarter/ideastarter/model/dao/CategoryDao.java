@@ -18,11 +18,11 @@ public class CategoryDao {
 
     public Category getCategoryIdByName(String name) throws SQLException {
         Category category = new Category();
-        try(Connection connection = template.getDataSource().getConnection()){
+        try (Connection connection = template.getDataSource().getConnection()) {
             PreparedStatement ps = connection.prepareStatement("SELECT id FROM categories WHERE name LIKE ?");
-            ps.setString(1,name);
+            ps.setString(1, name);
             ResultSet rs = ps.executeQuery();
-            if(rs.next()){
+            if (rs.next()) {
                 category.setId(rs.getLong(1));
                 category.setName(name);
             }

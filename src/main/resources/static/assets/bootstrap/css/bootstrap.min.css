@@ -1,9 +1,4 @@
-/*!
- * Bootstrap v4.2.1 (https://getbootstrap.com/)
- * Copyright 2011-2018 The Bootstrap Authors
- * Copyright 2011-2018 Twitter, Inc.
- * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
- */
+
 :root {
     --blue: #007bff;
     --indigo: #6610f2;
@@ -1918,6 +1913,7 @@ pre code {
 
 .form-control {
     display: block;
+    width: 100%;
     resize: none;
     height: calc(2.25rem + 2px);
     padding: .375rem .75rem;
@@ -9971,5 +9967,3 @@ a.text-dark:focus, a.text-dark:hover {
         border-color: #dee2e6
     }
 }
-
-/*# sourceMappingURL=bootstrap.min.css.map */

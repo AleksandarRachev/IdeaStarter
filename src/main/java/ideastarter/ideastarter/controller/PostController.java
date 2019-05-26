@@ -13,7 +13,6 @@ import ideastarter.ideastarter.model.pojo.User;
 import ideastarter.ideastarter.repository.PostRepository;
 import ideastarter.ideastarter.util.SuccessMessage;
 import ideastarter.ideastarter.util.exception.BaseException;
-import ideastarter.ideastarter.util.exception.NotLoggedException;
 import ideastarter.ideastarter.util.exception.PostExistsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -27,11 +26,10 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
-@RequestMapping(value = "/posts",produces = {"application/json"})
-public class PostController extends BaseController{
+@RequestMapping(value = "/posts", produces = {"application/json"})
+public class PostController extends BaseController {
     @Autowired
     private PostRepository postRepository;
     @Autowired
@@ -42,12 +40,12 @@ public class PostController extends BaseController{
     private CategoryDao categoryDao;
 
     @PostMapping
-    public ShowPostDto addPost(HttpServletRequest request,HttpSession session) throws BaseException, SQLException, ParseException {
+    public ShowPostDto addPost(HttpServletRequest request, HttpSession session) throws BaseException, SQLException, ParseException {
         validateLogin(session);
         Post post = new Post();
-        User user = (User)session.getAttribute("user");
+        User user = (User) session.getAttribute("user");
         int count = postDao.countPostsByTitle(request.getParameter("title"));
-        if(count > 0){
+        if (count > 0) {
             throw new PostExistsException();
         }
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -56,7 +54,7 @@ public class PostController extends BaseController{
         String categoryName = request.getParameter("category");
         Date startDate = simpleDateFormat.parse(request.getParameter("startDate"));
         Date endDate = simpleDateFormat.parse(request.getParameter("endDate"));
-        if(startDate.after(endDate)){
+        if (startDate.after(endDate)) {
             throw new BaseException("Wrong date");
         }
         Category category = categoryDao.getCategoryIdByName(categoryName);
@@ -69,20 +67,22 @@ public class PostController extends BaseController{
 
         postRepository.save(post);
         ShowUserDto showUser = userDao.getUserById(user.getId());
-        return new ShowPostDto(post.getId(),post.getTitle(),post.getDescription(),post.getStartDate(),post.getEndDate(),showUser);
+        return new ShowPostDto(post.getId(), post.getTitle(), post.getDescription(), post.getStartDate(), post.getEndDate(), showUser);
     }
+
     @GetMapping
     public List<ShowPostDto> getPosts(HttpSession session) throws BaseException, SQLException {
         validateLogin(session);
-        User user = (User)session.getAttribute("user");
+        User user = (User) session.getAttribute("user");
         return postDao.getPostsFromUser(user);
     }
 
     @GetMapping(value = "/all")
-    public List<ShowPostNoUserDto> getAllPosts(HttpSession session, HttpServletResponse response, HttpServletRequest request) throws SQLException{
+    public List<ShowPostNoUserDto> getAllPosts(HttpSession session, HttpServletResponse response, HttpServletRequest request) throws SQLException {
         response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
         return postDao.getAllPosts();
     }
+
     @GetMapping(value = "/categories")
     public List<CategoryDto> getCategories(HttpServletResponse response, HttpServletRequest request) throws SQLException {
         response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
@@ -90,12 +90,12 @@ public class PostController extends BaseController{
     }
 
     @PostMapping(value = "/donate/{id}")
-    public SuccessMessage donateToPost(@PathVariable("id") Long postId,HttpServletRequest request) throws SQLException {
+    public SuccessMessage donateToPost(@PathVariable("id") Long postId, HttpServletRequest request) throws SQLException {
         ShowPostNoUserDto post = postDao.getPostById(postId);
         double donate = Double.parseDouble(request.getParameter("donate"));
         System.out.println(donate);
         System.out.println(post.getDonates());
-        post.setDonates(post.getDonates()+donate);
+        post.setDonates(post.getDonates() + donate);
         System.out.println(post.getDonates());
         Post post1 = new Post();
         post1.setId(post.getId());

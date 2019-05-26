@@ -15,10 +15,11 @@ window.addEventListener('DOMContentLoaded', function() {
                                                  <!-- Author -->
                                                  <p class="lead">
                                                      by
-                                                     <a>${(data[i].user.firstName)+" "+(data[i].user.lastName)}</a>
+                                                     <p>${(data[i].user.firstName)+" "+(data[i].user.lastName)}</p>
                                                  </p>
                                                  <hr>
                                                  <p>Active period from ${data[i].startDate} to ${data[i].endDate}</p>
+                                                 <h3 class="mt-4">Donates: ${data[i].donates} $</h3>
                                                  <div class="container">
                                                     <div class="row justify-content-center">
                                                     </div>

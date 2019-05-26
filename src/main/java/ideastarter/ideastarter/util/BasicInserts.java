@@ -1,7 +1,6 @@
 package ideastarter.ideastarter.util;
 
 import ideastarter.ideastarter.model.dao.CategoryDao;
-import ideastarter.ideastarter.model.dao.UserDao;
 import ideastarter.ideastarter.model.pojo.Category;
 import ideastarter.ideastarter.model.pojo.Comment;
 import ideastarter.ideastarter.model.pojo.Post;
@@ -11,10 +10,9 @@ import ideastarter.ideastarter.repository.CommentRepository;
 import ideastarter.ideastarter.repository.PostRepository;
 import ideastarter.ideastarter.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.event.ApplicationReadyEvent;
-import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -33,8 +31,8 @@ public class BasicInserts {
     @Autowired
     private CommentRepository commentRepository;
 
-    @EventListener
-    public void appReady(ApplicationReadyEvent event) throws SQLException {
+    @PostConstruct
+    public void appReady() throws SQLException {
         User user = new User();
         user.setFirstName("admin");
         user.setLastName("admin");

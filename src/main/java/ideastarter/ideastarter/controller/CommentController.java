@@ -16,7 +16,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = "/comments")
-public class CommentController extends BaseController{
+public class CommentController extends BaseController {
 
     @Autowired
     private CommentDao commentDao;
@@ -27,10 +27,10 @@ public class CommentController extends BaseController{
     }
 
     @PostMapping(value = "/{id}")
-    public SuccessMessage putCommentOnPost(@PathVariable("id")Long postId, HttpSession session, HttpServletRequest request) throws NotLoggedException, SQLException {
+    public SuccessMessage putCommentOnPost(@PathVariable("id") Long postId, HttpSession session, HttpServletRequest request) throws NotLoggedException, SQLException {
         validateLogin(session);
-        User user = (User)session.getAttribute("user");
-        commentDao.putCommentOnPost(request.getParameter("comment"),postId,user.getId());
+        User user = (User) session.getAttribute("user");
+        commentDao.putCommentOnPost(request.getParameter("comment"), postId, user.getId());
         return new SuccessMessage("Comment added successfully", LocalDate.now());
     }
 

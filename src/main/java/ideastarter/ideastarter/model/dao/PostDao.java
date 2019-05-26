@@ -3,10 +3,7 @@ package ideastarter.ideastarter.model.dao;
 import ideastarter.ideastarter.model.dto.CategoryDto;
 import ideastarter.ideastarter.model.dto.ShowPostDto;
 import ideastarter.ideastarter.model.dto.ShowPostNoUserDto;
-import ideastarter.ideastarter.model.pojo.Category;
-import ideastarter.ideastarter.model.pojo.Post;
 import ideastarter.ideastarter.model.pojo.User;
-import ideastarter.ideastarter.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
@@ -30,11 +27,11 @@ public class PostDao {
 
     public List<ShowPostDto> getPostsFromUser(User user) throws SQLException {
         List<ShowPostDto> posts = new ArrayList<>();
-        try(Connection connection = this.jdbcTemplate.getDataSource().getConnection()){
+        try (Connection connection = this.jdbcTemplate.getDataSource().getConnection()) {
             PreparedStatement ps = connection.prepareStatement("SELECT id,title,description,start_date,end_date FROM posts WHERE user_id = ?");
-            ps.setLong(1,user.getId());
+            ps.setLong(1, user.getId());
             ResultSet rs = ps.executeQuery();
-            while (rs.next()){
+            while (rs.next()) {
                 ShowPostDto post = new ShowPostDto();
                 post.setId(rs.getLong(1));
                 post.setTitle(rs.getString(2));
@@ -50,10 +47,10 @@ public class PostDao {
 
     public List<ShowPostNoUserDto> getAllPosts() throws SQLException {
         List<ShowPostNoUserDto> posts = new ArrayList<>();
-        try(Connection connection = this.jdbcTemplate.getDataSource().getConnection()){
+        try (Connection connection = this.jdbcTemplate.getDataSource().getConnection()) {
             PreparedStatement ps = connection.prepareStatement("SELECT id,title,description,start_date,end_date,donates,user_id FROM posts");
             ResultSet rs = ps.executeQuery();
-            while (rs.next()){
+            while (rs.next()) {
                 ShowPostNoUserDto post = new ShowPostNoUserDto();
                 post.setId(rs.getLong(1));
                 post.setTitle(rs.getString(2));
@@ -70,10 +67,10 @@ public class PostDao {
 
     public List<CategoryDto> getCategories() throws SQLException {
         List<CategoryDto> categories = new ArrayList<>();
-        try(Connection connection = this.jdbcTemplate.getDataSource().getConnection()){
+        try (Connection connection = this.jdbcTemplate.getDataSource().getConnection()) {
             PreparedStatement ps = connection.prepareStatement("SELECT id,name FROM categories");
             ResultSet rs = ps.executeQuery();
-            while (rs.next()){
+            while (rs.next()) {
                 CategoryDto dto = new CategoryDto();
                 dto.setId(rs.getLong(1));
                 dto.setName(rs.getString(2));
@@ -84,12 +81,12 @@ public class PostDao {
     }
 
     public int countPostsByTitle(String title) throws SQLException {
-        try(Connection connection = jdbcTemplate.getDataSource().getConnection()){
+        try (Connection connection = jdbcTemplate.getDataSource().getConnection()) {
             PreparedStatement ps = connection.prepareStatement("SELECT COUNT(*) FROM posts WHERE title LIKE ?");
-            ps.setString(1,title);
+            ps.setString(1, title);
             ResultSet rs = ps.executeQuery();
             int count = 0;
-            if(rs.next()){
+            if (rs.next()) {
                 count = rs.getInt(1);
             }
             return count;
@@ -97,12 +94,12 @@ public class PostDao {
     }
 
     public ShowPostNoUserDto getPostById(long postId) throws SQLException {
-        try(Connection connection = jdbcTemplate.getDataSource().getConnection()){
+        try (Connection connection = jdbcTemplate.getDataSource().getConnection()) {
             PreparedStatement ps = connection.prepareStatement("SELECT id,title,description,start_date,end_date,donates FROM posts WHERE id = ?");
-            ps.setLong(1,postId);
+            ps.setLong(1, postId);
             ResultSet rs = ps.executeQuery();
             ShowPostNoUserDto post = new ShowPostNoUserDto();
-            if(rs.next()){
+            if (rs.next()) {
                 post.setId(rs.getLong(1));
                 post.setTitle(rs.getString(2));
                 post.setDescription(rs.getString(3));
