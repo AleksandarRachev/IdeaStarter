@@ -6,9 +6,18 @@ window.addEventListener('DOMContentLoaded', function() {
             if (xhr.readyState === 4) {
                 if (xhr.status >= 200 && status <= 299) {
                     const data = JSON.parse(xhr.responseText);
-                    const content = `<p>First name: ${data.firstName}</p>
+                    var imageSrc;
+                    if(data.imageUrl == null){
+                        imageSrc  = "/assets/images/icon-122x122.png";
+                    }
+                    else{
+                        imageSrc  = "http://localhost:9999/images/users/"+data.id;
+                    }
+                    const content = `<p>User id: ${data.id}</p>
+                    <p>First name: ${data.firstName}</p>
+                    <img src=${imageSrc} height="50" width="50">
                          <form method="POST" action="/images" enctype="multipart/form-data">
-                            <input type="file" name="image" />
+                            <input type="file" name="image" placeholder="Change profile pic"/>
                             <button type="submit">Upload</button>
                          </form>`;
                     document.getElementById('user').innerHTML = content;
