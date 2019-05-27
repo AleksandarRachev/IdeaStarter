@@ -1,7 +1,5 @@
 package ideastarter.ideastarter.controller;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import ideastarter.ideastarter.model.dao.UserDao;
 import ideastarter.ideastarter.model.pojo.User;
 import ideastarter.ideastarter.util.SuccessMessage;
@@ -15,20 +13,17 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.util.Base64;
 
 @RestController
 @RequestMapping(value = "/images")
 public class ImageController extends BaseController {
-    private static final String IMAGE_PATH = "C:\\Projects\\IdeaStarter\\IdeaStarter\\src\\main\\resources\\static\\assets\\userImages\\";
+    private static final String IMAGE_PATH = "C:\\Users\\rache\\Desktop\\images\\";
 
     @Autowired
     private UserDao userDao;
-    private ObjectMapper objectMapper = new ObjectMapper();
 
     @PostMapping
     public SuccessMessage userImageUpload(@RequestPart(value = "image") MultipartFile file, HttpSession session) throws SQLException, NotLoggedException, IOException {
@@ -38,6 +33,7 @@ public class ImageController extends BaseController {
         File newImage = new File(IMAGE_PATH+name);
         file.transferTo(newImage);
         userDao.addImageUrl(IMAGE_PATH,name,user.getId());
+        user.setImageUrl(name);
         return new SuccessMessage("Image uploaded", LocalDate.now());
     }
 
