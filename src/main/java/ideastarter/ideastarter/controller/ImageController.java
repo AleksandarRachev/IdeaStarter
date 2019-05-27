@@ -10,6 +10,7 @@ import ideastarter.ideastarter.util.exception.NotLoggedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpSession;
 import java.io.File;
@@ -30,18 +31,13 @@ public class ImageController extends BaseController {
     private ObjectMapper objectMapper = new ObjectMapper();
 
     @PostMapping
-    public SuccessMessage userImageUpload(@RequestBody String input, HttpSession session) throws SQLException, NotLoggedException, IOException {
+    public SuccessMessage userImageUpload(@RequestPart(value = "image") MultipartFile file, HttpSession session) throws SQLException, NotLoggedException, IOException {
         validateLogin(session);
         User user = (User) session.getAttribute("user");
-        JsonNode jsonNode = objectMapper.readTree(input);
-        String base64 = jsonNode.get("imageUrl").textValue();
-        byte[] bytes = Base64.getDecoder().decode(base64);
         String name = user.getId() + System.currentTimeMillis() + ".png";
-        File file = new File(IMAGE_PATH + name);
-        FileOutputStream fos = new FileOutputStream(file);
-        fos.write(bytes);
-        this.userDao.addImageUrl(IMAGE_PATH, name, user.getId());
-        fos.close();
+        File newImage = new File(IMAGE_PATH+name);
+        file.transferTo(newImage);
+        userDao.addImageUrl(IMAGE_PATH,name,user.getId());
         return new SuccessMessage("Image uploaded", LocalDate.now());
     }
 

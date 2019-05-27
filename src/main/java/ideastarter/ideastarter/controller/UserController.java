@@ -8,6 +8,7 @@ import ideastarter.ideastarter.util.SuccessMessage;
 import ideastarter.ideastarter.util.exception.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCrypt;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -82,6 +83,19 @@ public class UserController extends BaseController {
         validateLogin(session);
         session.invalidate();
         return "You logged out";
+    }
+
+    @GetMapping(value = "/profile")
+    public ShowUserDto getUser(HttpSession session) throws NotLoggedException {
+        validateLogin(session);
+        User logged = (User) session.getAttribute("user");
+        ShowUserDto user = new ShowUserDto();
+        user.setId(logged.getId());
+        user.setEmail(logged.getEmail());
+        user.setFirstName(logged.getFirstName());
+        user.setLastName(logged.getLastName());
+        user.setImageUrl(logged.getImageUrl());
+        return user;
     }
 
 }

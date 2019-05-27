@@ -29,7 +29,6 @@ window.addEventListener('DOMContentLoaded', function() {
                                                                 <div class="dragArea row">
                                                                     <div class="form-group col" data-for="donate">
                                                                         <input type="number" min="0" step="0.01" name="donate" placeholder="Amount" data-form-field="Donate" required="required" class="form-control display-7" id="donate">
-
                                                                     </div>
                                                                     <div class="col-auto input-group-btn"><button type="submit" class="btn btn-primary display-4">Donate</button></div>
                                                                 </div>
