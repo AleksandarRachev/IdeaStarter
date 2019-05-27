@@ -28,7 +28,8 @@ window.addEventListener('DOMContentLoaded', function() {
                                                             <form action=${"/posts/donate/"+data[i].id} method="POST" class="mbr-form form-with-styler">
                                                                 <div class="dragArea row">
                                                                     <div class="form-group col" data-for="donate">
-                                                                        <input type="number" step="0.01" name="donate" placeholder="Amount" data-form-field="Donate" required="required" class="form-control display-7" id="donate">
+                                                                        <input type="number" min="0" step="0.01" name="donate" placeholder="Amount" data-form-field="Donate" required="required" class="form-control display-7" id="donate">
+
                                                                     </div>
                                                                     <div class="col-auto input-group-btn"><button type="submit" class="btn btn-primary display-4">Donate</button></div>
                                                                 </div>
@@ -81,8 +82,15 @@ function getComments(cid,postId) {
             if (xhr.status >= 200 && status <= 299) {
                 const data = JSON.parse(xhr.responseText);
                 for(var i = 0;i<data.length;i++){
+                var imageSrc;
+                if(data[i].user.imageUrl == null){
+                    imageSrc  = "/assets/images/icon-122x122.png";
+                }
+                else{
+                    imageSrc  = "http://localhost:9999/images/users/"+data[i].user.id;
+                }
                     const content = `<div class="media mb-4">
-                                     <img class="d-flex mr-3 rounded-circle" src="http://placehold.it/50x50" alt="">
+                                     <img class="d-flex mr-3 rounded-circle" height="42" width="42" src=${imageSrc} alt="">
                                      <div class="media-body">
                                          <h5 class="mt-0">${data[i].user.firstName + " " + data[i].user.lastName}</h5>
                                          <p>${data[i].comment}</p>

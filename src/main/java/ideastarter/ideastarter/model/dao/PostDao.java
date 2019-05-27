@@ -48,7 +48,7 @@ public class PostDao {
     public List<ShowPostNoUserDto> getAllPosts() throws SQLException {
         List<ShowPostNoUserDto> posts = new ArrayList<>();
         try (Connection connection = this.jdbcTemplate.getDataSource().getConnection()) {
-            PreparedStatement ps = connection.prepareStatement("SELECT id,title,description,start_date,end_date,donates,user_id FROM posts");
+            PreparedStatement ps = connection.prepareStatement("SELECT id,title,description,start_date,end_date,donates,user_id FROM posts ORDER BY donates DESC LIMIT 5");
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 ShowPostNoUserDto post = new ShowPostNoUserDto();

@@ -31,77 +31,79 @@ public class BasicInserts {
     @Autowired
     private CommentRepository commentRepository;
 
-    @PostConstruct
-    public void appReady() throws SQLException {
-        User user = new User();
-        user.setFirstName("admin");
-        user.setLastName("admin");
-        user.setEmail("admin@abv.bg");
-        user.setPassword(PasswordEncoder.hashPassword("admin"));
-        user.setAdmin(true);
-        userRepository.save(user);
-
-        User user1 = new User();
-        user1.setFirstName("Sasho");
-        user1.setLastName("Minchev");
-        user1.setEmail("sasho@abv.bg");
-        user1.setPassword(PasswordEncoder.hashPassword("123"));
-        userRepository.save(user1);
-
-        Category category = new Category();
-        category.setName("Travel");
-        categoryRepository.save(category);
-
-        Category category1 = new Category();
-        category1.setName("Science");
-        categoryRepository.save(category1);
-
-        Category category2 = new Category();
-        category2.setName("Sports");
-        categoryRepository.save(category2);
-
-        Category category3 = new Category();
-        category3.setName("Technology");
-        categoryRepository.save(category3);
-
-
-        Post post = new Post();
-        Category categ = categoryDao.getCategoryIdByName("Travel");
-        post.setTitle("First post");
-        post.setDescription("This is the first post ever posted on idea starter by the admin!");
-        post.setStartDate(Date.valueOf(LocalDate.now()));
-        post.setEndDate(Date.valueOf(LocalDate.now().plusWeeks(1)));
-        post.setCategory(categ);
-        post.setUser(userRepository.findByEmail("admin@abv.bg"));
-        postRepository.save(post);
-
-        Post post1 = new Post();
-        Category categ1 = categoryDao.getCategoryIdByName("Science");
-        post1.setTitle("Second post");
-        post1.setDescription("This is the second post on idea starter by a random user!");
-        post1.setStartDate(Date.valueOf(LocalDate.now()));
-        post1.setEndDate(Date.valueOf(LocalDate.now().plusWeeks(1)));
-        post1.setCategory(categ1);
-        post1.setUser(userRepository.findByEmail("sasho@abv.bg"));
-        postRepository.save(post1);
-
-        Comment comment = new Comment();
-        comment.setComment("First ever comment by user");
-        comment.setPost(postRepository.findByTitle("First post"));
-        comment.setUser(userRepository.findByEmail("sasho@abv.bg"));
-        commentRepository.save(comment);
-
-        Comment comment1 = new Comment();
-        comment1.setComment("First ever comment by admin");
-        comment1.setPost(postRepository.findByTitle("Second post"));
-        comment1.setUser(userRepository.findByEmail("admin@abv.bg"));
-        commentRepository.save(comment1);
-
-        Comment comment2 = new Comment();
-        comment2.setComment("Second comment by user");
-        comment2.setPost(postRepository.findByTitle("Second post"));
-        comment2.setUser(userRepository.findByEmail("sasho@abv.bg"));
-        commentRepository.save(comment2);
-    }
+//    @PostConstruct
+//    public void appReady() throws SQLException {
+//        User user = new User();
+//        user.setFirstName("admin");
+//        user.setLastName("admin");
+//        user.setEmail("admin@abv.bg");
+//        user.setPassword(PasswordEncoder.hashPassword("admin"));
+//        user.setAdmin(true);
+//        user.setImageUrl("download.png");
+//        userRepository.save(user);
+//
+//        User user1 = new User();
+//        user1.setFirstName("Sasho");
+//        user1.setLastName("Minchev");
+//        user1.setEmail("sasho@abv.bg");
+//        user1.setPassword(PasswordEncoder.hashPassword("123"));
+//        user1.setImageUrl("download.png");
+//        userRepository.save(user1);
+//
+//        Category category = new Category();
+//        category.setName("Travel");
+//        categoryRepository.save(category);
+//
+//        Category category1 = new Category();
+//        category1.setName("Science");
+//        categoryRepository.save(category1);
+//
+//        Category category2 = new Category();
+//        category2.setName("Sports");
+//        categoryRepository.save(category2);
+//
+//        Category category3 = new Category();
+//        category3.setName("Technology");
+//        categoryRepository.save(category3);
+//
+//
+//        Post post = new Post();
+//        Category categ = categoryDao.getCategoryIdByName("Travel");
+//        post.setTitle("First post");
+//        post.setDescription("This is the first post ever posted on idea starter by the admin!");
+//        post.setStartDate(Date.valueOf(LocalDate.now()));
+//        post.setEndDate(Date.valueOf(LocalDate.now().plusWeeks(1)));
+//        post.setCategory(categ);
+//        post.setUser(userRepository.findByEmail("admin@abv.bg"));
+//        postRepository.save(post);
+//
+//        Post post1 = new Post();
+//        Category categ1 = categoryDao.getCategoryIdByName("Science");
+//        post1.setTitle("Second post");
+//        post1.setDescription("This is the second post on idea starter by a random user!");
+//        post1.setStartDate(Date.valueOf(LocalDate.now()));
+//        post1.setEndDate(Date.valueOf(LocalDate.now().plusWeeks(1)));
+//        post1.setCategory(categ1);
+//        post1.setUser(userRepository.findByEmail("sasho@abv.bg"));
+//        postRepository.save(post1);
+//
+//        Comment comment = new Comment();
+//        comment.setComment("First ever comment by user");
+//        comment.setPost(postRepository.findByTitle("First post"));
+//        comment.setUser(userRepository.findByEmail("sasho@abv.bg"));
+//        commentRepository.save(comment);
+//
+//        Comment comment1 = new Comment();
+//        comment1.setComment("First ever comment by admin");
+//        comment1.setPost(postRepository.findByTitle("Second post"));
+//        comment1.setUser(userRepository.findByEmail("admin@abv.bg"));
+//        commentRepository.save(comment1);
+//
+//        Comment comment2 = new Comment();
+//        comment2.setComment("Second comment by user");
+//        comment2.setPost(postRepository.findByTitle("Second post"));
+//        comment2.setUser(userRepository.findByEmail("sasho@abv.bg"));
+//        commentRepository.save(comment2);
+//    }
 
 }

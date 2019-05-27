@@ -93,10 +93,7 @@ public class PostController extends BaseController {
     public SuccessMessage donateToPost(@PathVariable("id") Long postId, HttpServletRequest request) throws SQLException {
         ShowPostNoUserDto post = postDao.getPostById(postId);
         double donate = Double.parseDouble(request.getParameter("donate"));
-        System.out.println(donate);
-        System.out.println(post.getDonates());
         post.setDonates(post.getDonates() + donate);
-        System.out.println(post.getDonates());
         Post post1 = new Post();
         post1.setId(post.getId());
         post1.setDonates(post.getDonates());

@@ -21,28 +21,15 @@ import java.time.LocalDate;
 import java.util.Base64;
 
 @RestController
+@RequestMapping(value = "/images")
 public class ImageController extends BaseController {
-    private static final String IMAGE_PATH = "C:\\Users\\rache\\Desktop\\users\\";
+    private static final String IMAGE_PATH = "C:\\Projects\\IdeaStarter\\IdeaStarter\\src\\main\\resources\\static\\assets\\userImages\\";
 
     @Autowired
     private UserDao userDao;
     private ObjectMapper objectMapper = new ObjectMapper();
 
-    //    @PostMapping("/images")
-//    public SuccessMessage userImageUpload(@PathVariable(value = "imageUrl") String image,HttpSession session) throws SQLException, NotLoggedException, IOException {
-//        validateLogin(session);
-//        User user = (User)session.getAttribute("user");
-//        String base64 = image;
-//        byte[] bytes = Base64.getDecoder().decode(base64);
-//        String name = user.getId()+System.currentTimeMillis()+".png";
-//        File file = new File(IMAGE_PATH+name);
-//        FileOutputStream fos = new FileOutputStream(file);
-//        fos.write(bytes);
-//        this.userDao.addImageUrl(name,user.getId());
-//        fos.close();
-//        return new SuccessMessage("Image uploaded", LocalDate.now());
-//    }
-    @PostMapping("/images")
+    @PostMapping
     public SuccessMessage userImageUpload(@RequestBody String input, HttpSession session) throws SQLException, NotLoggedException, IOException {
         validateLogin(session);
         User user = (User) session.getAttribute("user");
@@ -58,7 +45,7 @@ public class ImageController extends BaseController {
         return new SuccessMessage("Image uploaded", LocalDate.now());
     }
 
-    @GetMapping(value = "/images/users/{id}", produces = MediaType.IMAGE_PNG_VALUE)
+    @GetMapping(value = "/users/{id}", produces = MediaType.IMAGE_PNG_VALUE)
     public byte[] downloadImage(@PathVariable("id") long userId) throws Exception {
         String imageUrl = this.userDao.getImageUrl(userId);
         if (imageUrl == null) {
@@ -69,7 +56,7 @@ public class ImageController extends BaseController {
         return fis.readAllBytes();
     }
 
-    @DeleteMapping(value = "/images")
+    @DeleteMapping
     public SuccessMessage deleteImage(HttpSession session) throws ImageMissingException, SQLException, NotLoggedException {
         validateLogin(session);
         User user = (User) session.getAttribute("user");
