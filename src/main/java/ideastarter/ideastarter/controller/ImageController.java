@@ -1,5 +1,6 @@
 package ideastarter.ideastarter.controller;
 
+import ideastarter.ideastarter.model.dao.PostDao;
 import ideastarter.ideastarter.model.dao.UserDao;
 import ideastarter.ideastarter.model.pojo.User;
 import ideastarter.ideastarter.util.SuccessMessage;
@@ -25,6 +26,9 @@ public class ImageController extends BaseController {
     @Autowired
     private UserDao userDao;
 
+    @Autowired
+    private PostDao postDao;
+
     @PostMapping
     public SuccessMessage userImageUpload(@RequestPart(value = "image") MultipartFile file, HttpSession session) throws SQLException, NotLoggedException, IOException {
         validateLogin(session);
@@ -37,9 +41,28 @@ public class ImageController extends BaseController {
         return new SuccessMessage("Image uploaded", LocalDate.now());
     }
 
+    @PostMapping(value = "/posts/{id}")
+    public SuccessMessage postImageUpload(@PathVariable("id")Long postId,@RequestPart(value = "image") MultipartFile file) throws SQLException, IOException {
+        String name = postId + System.currentTimeMillis() + ".png";
+        File newImage = new File(IMAGE_PATH+name);
+        file.transferTo(newImage);
+        userDao.addImageUrl(IMAGE_PATH,name,postId);
+        return new SuccessMessage("Image uploaded", LocalDate.now());
+    }
+
     @GetMapping(value = "/users/{id}", produces = MediaType.IMAGE_PNG_VALUE)
-    public byte[] downloadImage(@PathVariable("id") long userId) throws Exception {
+    public byte[] downloadImageById(@PathVariable("id") long userId) throws Exception {
         String imageUrl = this.userDao.getImageUrl(userId);
+        if (imageUrl == null) {
+            throw new ImageMissingException();
+        }
+        File image = new File(IMAGE_PATH + imageUrl);
+        FileInputStream fis = new FileInputStream(image);
+        return fis.readAllBytes();
+    }
+
+    @GetMapping(value = "/posts/{url}", produces = MediaType.IMAGE_PNG_VALUE)
+    public byte[] downloadImageByName(@PathVariable("url") String imageUrl) throws Exception {
         if (imageUrl == null) {
             throw new ImageMissingException();
         }

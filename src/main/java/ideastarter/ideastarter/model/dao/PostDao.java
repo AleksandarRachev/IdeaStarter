@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
+import java.io.File;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -48,7 +49,7 @@ public class PostDao {
     public List<ShowPostNoUserDto> getAllPosts() throws SQLException {
         List<ShowPostNoUserDto> posts = new ArrayList<>();
         try (Connection connection = this.jdbcTemplate.getDataSource().getConnection()) {
-            PreparedStatement ps = connection.prepareStatement("SELECT id,title,description,start_date,end_date,donates,user_id FROM posts ORDER BY donates DESC LIMIT 5");
+            PreparedStatement ps = connection.prepareStatement("SELECT id,title,description,start_date,end_date,donates,user_id,image_url FROM posts ORDER BY donates DESC LIMIT 5");
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 ShowPostNoUserDto post = new ShowPostNoUserDto();
@@ -59,6 +60,7 @@ public class PostDao {
                 post.setEndDate(rs.getDate(5));
                 post.setDonates(rs.getDouble(6));
                 post.setUser(dao.getUserById(rs.getLong(7)));
+                post.setImageUrl(rs.getString(8));
                 posts.add(post);
             }
         }
@@ -118,6 +120,32 @@ public class PostDao {
             ps.setDouble(1,post.getDonates()+donation);
             ps.setLong(2, postId);
             ps.executeUpdate();
+        }
+    }
+
+    public void addImageUrl(String dir, String imageUrl, long postId) throws SQLException {
+        Connection connection = null;
+        try {
+            connection = jdbcTemplate.getDataSource().getConnection();
+            connection.setAutoCommit(false);
+            PreparedStatement ps = connection.prepareStatement("SELECT image_url FROM posts WHERE id = ?");
+            ps.setLong(1, postId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                File file = new File(dir + rs.getString(1));
+                file.delete();
+            }
+            PreparedStatement putImage = connection.prepareStatement("UPDATE posts SET image_url = ? WHERE id = ?");
+            putImage.setString(1, imageUrl);
+            putImage.setLong(2, postId);
+            putImage.executeUpdate();
+            connection.commit();
+        } catch (SQLException e) {
+            connection.rollback();
+            throw new SQLException();
+        } finally {
+            connection.setAutoCommit(true);
+            connection.close();
         }
     }
 

@@ -7,6 +7,13 @@ window.addEventListener('DOMContentLoaded', function() {
                 if (xhr.status >= 200 && status <= 299) {
                     const data = JSON.parse(xhr.responseText);
                     for(var i = 0;i<data.length;i++){
+                        var imageSrc;
+                        if(data[i].imageUrl == null){
+                            imageSrc = "assets/images/background4.jpg";
+                        }
+                        else{
+                            imageSrc = "http://localhost:9999/images/posts/"+data[i].imageUrl;
+                        }
                         const cid = "comment"+i;
                         const content = `<div class="container">
                                          <div class="row">
@@ -37,7 +44,7 @@ window.addEventListener('DOMContentLoaded', function() {
                                                     </div>
                                                  </div>
                                                  <hr>
-                                                 <img class="img-fluid rounded" src="assets/images/background4.jpg">
+                                                 <img class="img-fluid rounded" src=${imageSrc}>
                                                  <hr>
                                                  <!-- Post Content -->
                                                  <h4>Description</h4>

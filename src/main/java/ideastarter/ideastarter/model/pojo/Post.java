@@ -40,5 +40,6 @@ public class Post {
     private List<Comment> comments;
     @OneToOne
     private Category category;
+    private String imageUrl;
 
 }

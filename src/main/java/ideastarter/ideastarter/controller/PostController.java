@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -40,7 +41,7 @@ public class PostController extends BaseController {
     private CategoryDao categoryDao;
 
     @PostMapping
-    public ShowPostDto addPost(HttpServletRequest request, HttpSession session) throws BaseException, SQLException, ParseException {
+    public ShowPostDto addPost(HttpServletResponse response,HttpServletRequest request, HttpSession session) throws BaseException, SQLException, ParseException, IOException {
         validateLogin(session);
         Post post = new Post();
         User user = (User) session.getAttribute("user");
@@ -64,7 +65,6 @@ public class PostController extends BaseController {
         post.setEndDate(endDate);
         post.setCategory(category);
         post.setUser(user);
-
         postRepository.save(post);
         ShowUserDto showUser = userDao.getUserById(user.getId());
         return new ShowPostDto(post.getId(), post.getTitle(), post.getDescription(), post.getStartDate(), post.getEndDate(), showUser);
