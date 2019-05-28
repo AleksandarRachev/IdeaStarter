@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html  >
+<html>
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -41,8 +41,6 @@
         </div>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav nav-dropdown" data-app-modern-menu="true"><li class="nav-item">
-                    <a class="nav-link link text-white display-4" href="https://mobirise.com">
-                        </a>
                 </li><li class="nav-item"><a class="nav-link link text-white display-4" href="index.html"><span class="socicon socicon-telegram mbr-iconfont mbr-iconfont-btn"></span>Homepage
                         </a></li>
                 <li class="nav-item">
@@ -57,13 +55,12 @@
     </nav>
 </section>
 
-<section class="engine"><a href="https://mobirise.info/a">online web builder</a></section><section class="mbr-section form1 cid-rrvlEQr09s" id="form1-o">
+<section class="engine"></section><section class="mbr-section form1 cid-rrvlEQr09s" id="form1-o">
 
     <div class="container">
         <div class="row justify-content-center">
             <div class="title col-12 col-lg-8">
                 <h2 class="mbr-section-title align-center pb-3 mbr-fonts-style display-2">Sign up</h2>
-
             </div>
         </div>
     </div>
@@ -78,15 +75,7 @@
                             <input id="password" type="password" name="password" data-form-field="Password" required="required" class="form-control display-7">
                             <label class="form-control-label mbr-fonts-style display-7">Confirm password</label>
                             <input type="password" name="password2" data-form-field="Password" required="required" class="form-control display-7" oninput="check(this)">
-                            <script>
-                                function check(input) {
-                                    if (input.value !== document.getElementById('password').value) {
-                                        input.setCustomValidity('Password Must be Matching.');
-                                    } else {
-                                        input.setCustomValidity('');
-                                    }
-                                }
-                            </script>
+                            <script src="assets/js/passCheck.js"></script>
                             <label class="form-control-label mbr-fonts-style display-7">First name</label>
                             <input type="text" name="firstName" data-form-field="firstName" required="required" class="form-control display-7">
                             <label class="form-control-label mbr-fonts-style display-7">Last name</label>
@@ -108,7 +97,6 @@
   <script src="assets/touchswipe/jquery.touch-swipe.min.js"></script>
   <script src="assets/theme/js/script.js"></script>
   <script src="assets/formoid/formoid.min.js"></script>
-  
-  
+
 </body>
 </html>

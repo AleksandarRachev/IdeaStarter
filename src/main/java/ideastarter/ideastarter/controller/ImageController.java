@@ -21,7 +21,7 @@ import java.time.LocalDate;
 @RestController
 @RequestMapping(value = "/images")
 public class ImageController extends BaseController {
-    private static final String IMAGE_PATH = "C:\\Users\\Aleksandar_Rachev\\Desktop\\Images\\";
+    private static final String IMAGE_PATH = "C:\\Users\\rache\\Desktop\\images\\";
 
     @Autowired
     private UserDao userDao;
