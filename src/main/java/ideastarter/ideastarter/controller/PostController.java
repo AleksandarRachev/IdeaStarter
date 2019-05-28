@@ -91,17 +91,8 @@ public class PostController extends BaseController {
 
     @PostMapping(value = "/donate/{id}")
     public SuccessMessage donateToPost(@PathVariable("id") Long postId, HttpServletRequest request) throws SQLException {
-        ShowPostNoUserDto post = postDao.getPostById(postId);
         double donate = Double.parseDouble(request.getParameter("donate"));
-        post.setDonates(post.getDonates() + donate);
-        Post post1 = new Post();
-        post1.setId(post.getId());
-        post1.setDonates(post.getDonates());
-        post1.setTitle(post.getTitle());
-        post1.setDescription(post.getDescription());
-        post1.setStartDate(post.getStartDate());
-        post1.setEndDate(post.getEndDate());
-        postRepository.save(post1);
+        postDao.takeDonation(postId,donate);
         return new SuccessMessage("Donate successful", LocalDate.now());
     }
 

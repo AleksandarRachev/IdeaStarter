@@ -58,6 +58,9 @@ window.addEventListener('DOMContentLoaded', function() {
                                     </div>
                                 </div>
                             </div>
+                            <form method="POST" action="/users/logout">
+                              <button type="submit" class="btn btn-sm btn-primary display-7">Logout</button>
+                           </form>
                         </div>
                     </section>`;
                 }

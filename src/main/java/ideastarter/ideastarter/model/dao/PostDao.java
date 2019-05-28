@@ -111,4 +111,14 @@ public class PostDao {
         }
     }
 
+    public void takeDonation(long postId, double donation) throws SQLException {
+        try (Connection connection = jdbcTemplate.getDataSource().getConnection()) {
+            ShowPostNoUserDto post = getPostById(postId);
+            PreparedStatement ps = connection.prepareStatement("UPDATE posts SET donates = ? WHERE id = ?");
+            ps.setDouble(1,post.getDonates()+donation);
+            ps.setLong(2, postId);
+            ps.executeUpdate();
+        }
+    }
+
 }

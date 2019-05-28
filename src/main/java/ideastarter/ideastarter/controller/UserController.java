@@ -79,10 +79,10 @@ public class UserController extends BaseController {
     }
 
     @PostMapping(value = "/logout")
-    public String logoutUser(HttpSession session) throws NotLoggedException {
+    public SuccessMessage logoutUser(HttpSession session) throws NotLoggedException {
         validateLogin(session);
         session.invalidate();
-        return "You logged out";
+        return new SuccessMessage("You logged out",LocalDate.now());
     }
 
     @GetMapping(value = "/profile")
