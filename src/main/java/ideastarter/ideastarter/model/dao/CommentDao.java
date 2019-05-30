@@ -47,4 +47,12 @@ public class CommentDao {
             ps.execute();
         }
     }
+
+    public void deleteCommentsByPostId(long postId) throws SQLException {
+        try (Connection connection = template.getDataSource().getConnection()) {
+            PreparedStatement ps = connection.prepareStatement("DELETE comments FROM comments WHERE post_id = ?");
+            ps.setLong(1, postId);
+            ps.execute();
+        }
+    }
 }

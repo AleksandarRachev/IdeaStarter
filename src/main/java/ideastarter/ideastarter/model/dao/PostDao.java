@@ -26,20 +26,22 @@ public class PostDao {
     @Autowired
     private CommentDao commentDao;
 
-    public List<ShowPostDto> getPostsFromUser(User user) throws SQLException {
-        List<ShowPostDto> posts = new ArrayList<>();
+    public List<ShowPostNoUserDto> getPostsForUser(long userId) throws SQLException {
+        List<ShowPostNoUserDto> posts = new ArrayList<>();
         try (Connection connection = this.jdbcTemplate.getDataSource().getConnection()) {
-            PreparedStatement ps = connection.prepareStatement("SELECT id,title,description,start_date,end_date FROM posts WHERE user_id = ?");
-            ps.setLong(1, user.getId());
+            PreparedStatement ps = connection.prepareStatement("SELECT id,title,description,start_date,end_date,donates,user_id,image_url FROM posts WHERE user_id = ?");
+            ps.setLong(1, userId);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                ShowPostDto post = new ShowPostDto();
+                ShowPostNoUserDto post = new ShowPostNoUserDto();
                 post.setId(rs.getLong(1));
                 post.setTitle(rs.getString(2));
                 post.setDescription(rs.getString(3));
                 post.setStartDate(rs.getDate(4));
                 post.setEndDate(rs.getDate(5));
-                post.setUser(dao.getUserById(user.getId()));
+                post.setDonates(rs.getDouble(6));
+                post.setUser(dao.getUserById(rs.getLong(7)));
+                post.setImageUrl(rs.getString(8));
                 posts.add(post);
             }
         }
@@ -49,7 +51,8 @@ public class PostDao {
     public List<ShowPostNoUserDto> getAllPosts() throws SQLException {
         List<ShowPostNoUserDto> posts = new ArrayList<>();
         try (Connection connection = this.jdbcTemplate.getDataSource().getConnection()) {
-            PreparedStatement ps = connection.prepareStatement("SELECT id,title,description,start_date,end_date,donates,user_id,image_url FROM posts ORDER BY donates DESC LIMIT 5");
+            PreparedStatement ps = connection.prepareStatement("SELECT id,title,description,start_date,end_date," +
+                    "donates,user_id,image_url FROM posts ORDER BY donates DESC LIMIT 5");
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 ShowPostNoUserDto post = new ShowPostNoUserDto();

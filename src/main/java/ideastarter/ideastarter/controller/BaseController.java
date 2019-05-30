@@ -30,7 +30,7 @@ public abstract class BaseController {
         return new ErrorMessage(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR.value(), LocalDate.now());
     }
 
-    protected void validateLogin(HttpSession session) throws NotLoggedException {
+    void validateLogin(HttpSession session) throws NotLoggedException {
         if (session.getAttribute("user") == null) {
             throw new NotLoggedException();
         }

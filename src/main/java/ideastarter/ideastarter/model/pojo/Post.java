@@ -24,11 +24,10 @@ public class Post {
     private String title;
     @Column(nullable = false)
     private String description;
-    @Column()
-    @Type(type = "date")
+    @Column(nullable = false)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
     private Date startDate;
-    @Column()
+    @Column(nullable = false)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
     private Date endDate;
     private Double donates;

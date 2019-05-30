@@ -1,6 +1,7 @@
 package ideastarter.ideastarter.controller;
 
 import ideastarter.ideastarter.model.dao.CategoryDao;
+import ideastarter.ideastarter.model.dao.CommentDao;
 import ideastarter.ideastarter.model.dao.PostDao;
 import ideastarter.ideastarter.model.dao.UserDao;
 import ideastarter.ideastarter.model.dto.CategoryDto;
@@ -10,6 +11,7 @@ import ideastarter.ideastarter.model.dto.ShowUserDto;
 import ideastarter.ideastarter.model.pojo.Category;
 import ideastarter.ideastarter.model.pojo.Post;
 import ideastarter.ideastarter.model.pojo.User;
+import ideastarter.ideastarter.repository.CommentRepository;
 import ideastarter.ideastarter.repository.PostRepository;
 import ideastarter.ideastarter.util.SuccessMessage;
 import ideastarter.ideastarter.util.exception.BaseException;
@@ -20,7 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.io.IOException;
+import javax.transaction.Transactional;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -39,9 +41,11 @@ public class PostController extends BaseController {
     private UserDao userDao;
     @Autowired
     private CategoryDao categoryDao;
+    @Autowired
+    private CommentDao commentDao;
 
     @PostMapping
-    public ShowPostDto addPost(HttpServletResponse response,HttpServletRequest request, HttpSession session) throws BaseException, SQLException, ParseException, IOException {
+    public ShowPostDto addPost(HttpServletResponse response,HttpServletRequest request, HttpSession session) throws BaseException, SQLException, ParseException {
         validateLogin(session);
         Post post = new Post();
         User user = (User) session.getAttribute("user");
@@ -70,15 +74,21 @@ public class PostController extends BaseController {
         return new ShowPostDto(post.getId(), post.getTitle(), post.getDescription(), post.getStartDate(), post.getEndDate(), showUser);
     }
 
-    @GetMapping
-    public List<ShowPostDto> getPosts(HttpSession session) throws BaseException, SQLException {
-        validateLogin(session);
-        User user = (User) session.getAttribute("user");
-        return postDao.getPostsFromUser(user);
+    @GetMapping(value = "/{id}")
+    public List<ShowPostNoUserDto> getPosts(@PathVariable("id") Long userId) throws SQLException {
+        return postDao.getPostsForUser(userId);
+    }
+
+    @DeleteMapping(value = "/{id}")
+    @Transactional
+    public SuccessMessage deletePost(@PathVariable("id") Long postId) throws SQLException {
+        commentDao.deleteCommentsByPostId(postId);
+        postRepository.deleteById(postId);
+        return new SuccessMessage("Post deleted successfully",LocalDate.now());
     }
 
     @GetMapping(value = "/all")
-    public List<ShowPostNoUserDto> getAllPosts(HttpSession session, HttpServletResponse response, HttpServletRequest request) throws SQLException {
+    public List<ShowPostNoUserDto> getAllPosts(HttpServletResponse response, HttpServletRequest request) throws SQLException {
         response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
         return postDao.getAllPosts();
     }
