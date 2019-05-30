@@ -96,12 +96,12 @@ function getComments(cid,postId) {
                     imageSrc  = "http://localhost:9999/images/users/"+data[i].user.id;
                 }
                     const content = `<div class="media mb-4">
-                                     <img class="d-flex mr-3 rounded-circle" height="42" width="42" src=${imageSrc} alt="">
-                                     <div class="media-body">
-                                         <h5 class="mt-0">${data[i].user.firstName + " " + data[i].user.lastName}</h5>
-                                         <p>${data[i].comment}</p>
-                                     </div>
-                                 </div>`;
+                                         <img class="d-flex mr-3 rounded-circle" height="42" width="42" src=${imageSrc} alt="">
+                                         <div class="media-body">
+                                             <h5 class="mt-0">${data[i].user.firstName + " " + data[i].user.lastName}</h5>
+                                             <p>${data[i].comment}</p>
+                                         </div>
+                                     </div>`;
                     document.getElementById(cid).innerHTML += content;
                 }
             }

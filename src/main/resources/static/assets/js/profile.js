@@ -78,21 +78,12 @@ window.addEventListener('DOMContentLoaded', function() {
 });
 
 function deletePost(postId){
-    var delPost = confirm("Are you sure you want to delete that post?");
+    const delPost = confirm("Are you sure you want to delete that post?");
     if(delPost === false){
         return;
     }
-    var url = "http://localhost:9999/posts/"+postId;
-    var xhr = new XMLHttpRequest();
-    xhr.open("DELETE", url, true);
-    xhr.onload = function () {
-    	var users = JSON.parse(xhr.responseText);
-    	if (xhr.readyState == 4 && xhr.status == "200") {
-    		console.table(users);
-    	} else {
-    		console.error(users);
-    	}
-    }
+    const xhr = new XMLHttpRequest();
+    xhr.open("DELETE", "http://localhost:9999/posts/"+postId, true);
     xhr.send(null);
     location.reload();
 }

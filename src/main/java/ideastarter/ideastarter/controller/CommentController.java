@@ -4,6 +4,8 @@ import ideastarter.ideastarter.model.dao.CommentDao;
 import ideastarter.ideastarter.model.dto.ShowCommentDto;
 import ideastarter.ideastarter.model.pojo.User;
 import ideastarter.ideastarter.util.SuccessMessage;
+import ideastarter.ideastarter.util.exception.BaseException;
+import ideastarter.ideastarter.util.exception.InvalidCommentException;
 import ideastarter.ideastarter.util.exception.NotLoggedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -27,10 +29,14 @@ public class CommentController extends BaseController {
     }
 
     @PostMapping(value = "/{id}")
-    public SuccessMessage putCommentOnPost(@PathVariable("id") Long postId, HttpSession session, HttpServletRequest request) throws NotLoggedException, SQLException {
+    public SuccessMessage putCommentOnPost(@PathVariable("id") Long postId, HttpSession session, HttpServletRequest request) throws BaseException, SQLException{
         validateLogin(session);
         User user = (User) session.getAttribute("user");
-        commentDao.putCommentOnPost(request.getParameter("comment"), postId, user.getId());
+        String comment = request.getParameter("comment");
+        if(comment.isEmpty() || comment.contains(" ") || comment.contains("\n")){
+            throw new InvalidCommentException();
+        }
+        commentDao.putCommentOnPost(comment, postId, user.getId());
         return new SuccessMessage("Comment added successfully", LocalDate.now());
     }
 
