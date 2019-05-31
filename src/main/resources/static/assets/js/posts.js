@@ -32,12 +32,14 @@ window.addEventListener('DOMContentLoaded', function() {
                                                     </div>
                                                     <div class="row py-2 justify-content-center">
                                                         <div class="col-12 col-lg-6  col-md-8 " data-form-type="formoid">
-                                                            <form action=${"/posts/donate/"+data[i].id} method="POST" class="mbr-form form-with-styler">
+
+                                                            <form action="donate.html" method="GET" class="mbr-form form-with-styler">
                                                                 <div class="dragArea row">
                                                                     <div class="form-group col" data-for="donate">
-                                                                        <input type="number" min="0" step="0.01" name="donate" placeholder="Amount" data-form-field="Donate" required="required" class="form-control display-7" id="donate">
+                                                                        <input type="number" min="0" step="0.01" name="donate1" placeholder="Amount" data-form-field="Donate" required="required" class="form-control display-7" id="donate1">
+                                                                        <input value=${data[i].id} id="postId" name="postId" type="hidden">
                                                                     </div>
-                                                                    <div class="col-auto input-group-btn"><button type="submit" class="btn btn-primary display-4">Donate</button></div>
+                                                                    <div class="col-auto input-group-btn"><button type="submit" class="btn btn-primary display-4">Donate form</button></div>
                                                                 </div>
                                                             </form>
                                                         </div>

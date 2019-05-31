@@ -11,7 +11,6 @@ import ideastarter.ideastarter.model.dto.ShowUserDto;
 import ideastarter.ideastarter.model.pojo.Category;
 import ideastarter.ideastarter.model.pojo.Post;
 import ideastarter.ideastarter.model.pojo.User;
-import ideastarter.ideastarter.repository.CommentRepository;
 import ideastarter.ideastarter.repository.PostRepository;
 import ideastarter.ideastarter.util.SuccessMessage;
 import ideastarter.ideastarter.util.exception.BaseException;

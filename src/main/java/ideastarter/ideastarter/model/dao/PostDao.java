@@ -1,9 +1,7 @@
 package ideastarter.ideastarter.model.dao;
 
 import ideastarter.ideastarter.model.dto.CategoryDto;
-import ideastarter.ideastarter.model.dto.ShowPostDto;
 import ideastarter.ideastarter.model.dto.ShowPostNoUserDto;
-import ideastarter.ideastarter.model.pojo.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
