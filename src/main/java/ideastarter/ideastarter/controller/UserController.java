@@ -1,5 +1,6 @@
 package ideastarter.ideastarter.controller;
 
+import ideastarter.ideastarter.model.dao.UserDao;
 import ideastarter.ideastarter.model.dto.ShowUserDto;
 import ideastarter.ideastarter.model.pojo.User;
 import ideastarter.ideastarter.repository.UserRepository;
@@ -8,13 +9,12 @@ import ideastarter.ideastarter.util.SuccessMessage;
 import ideastarter.ideastarter.util.exception.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCrypt;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.math.BigDecimal;
+import java.sql.SQLException;
 import java.time.LocalDate;
 
 @RestController
@@ -23,6 +23,8 @@ public class UserController extends BaseController {
 
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private UserDao userDao;
 
     @PostMapping(value = "/register")
     public SuccessMessage register(HttpSession session, HttpServletRequest request) throws BaseException {
@@ -96,6 +98,13 @@ public class UserController extends BaseController {
         user.setLastName(logged.getLastName());
         user.setImageUrl(logged.getImageUrl());
         return user;
+    }
+
+    @GetMapping(value = "/donates/{id}")
+    public SuccessMessage getDonatesGatheres(@PathVariable("id") Long userId) throws SQLException {
+        double moneyGathered = userDao.getTotalDonates(userId);
+        BigDecimal bigDecimal = BigDecimal.valueOf(moneyGathered);
+        return new SuccessMessage(""+bigDecimal,LocalDate.now());
     }
 
 }

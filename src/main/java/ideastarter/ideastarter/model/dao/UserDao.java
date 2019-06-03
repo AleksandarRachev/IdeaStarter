@@ -16,11 +16,11 @@ import java.sql.SQLException;
 @Component
 public class UserDao {
     @Autowired
-    private JdbcTemplate jdbcTemplate;
+    private JdbcTemplate template;
 
     public ShowUserDto getUserById(long id) throws SQLException {
         ShowUserDto showUser = new ShowUserDto();
-        try (Connection connection = jdbcTemplate.getDataSource().getConnection()) {
+        try (Connection connection = template.getDataSource().getConnection()) {
             PreparedStatement ps = connection.prepareStatement("SELECT id,first_name,last_name,email,image_url FROM users WHERE id = ?");
             ps.setLong(1, id);
             ResultSet rs = ps.executeQuery();
@@ -38,7 +38,7 @@ public class UserDao {
     public void addImageUrl(String dir, String imageUrl, long userId) throws SQLException {
         Connection connection = null;
         try {
-            connection = jdbcTemplate.getDataSource().getConnection();
+            connection = template.getDataSource().getConnection();
             connection.setAutoCommit(false);
             PreparedStatement ps = connection.prepareStatement("SELECT image_url FROM users WHERE id = ?");
             ps.setLong(1, userId);
@@ -62,7 +62,7 @@ public class UserDao {
     }
 
     public String getImageUrl(long userId) throws SQLException {
-        try (Connection connection = jdbcTemplate.getDataSource().getConnection()) {
+        try (Connection connection = template.getDataSource().getConnection()) {
             PreparedStatement ps = connection.prepareStatement("SELECT image_url FROM users WHERE id = ?");
             ps.setLong(1, userId);
             ResultSet rs = ps.executeQuery();
@@ -75,7 +75,7 @@ public class UserDao {
     }
 
     public void deleteImage(String dir, User user) throws ImageMissingException, SQLException {
-        Connection connection = jdbcTemplate.getDataSource().getConnection();
+        Connection connection = template.getDataSource().getConnection();
         if (connection != null) {
             try {
                 connection.setAutoCommit(false);
@@ -93,6 +93,19 @@ public class UserDao {
                 connection.setAutoCommit(true);
                 connection.close();
             }
+        }
+    }
+
+    public double getTotalDonates(long userId) throws SQLException {
+        try (Connection connection = template.getDataSource().getConnection()) {
+            PreparedStatement ps = connection.prepareStatement("SELECT SUM(donates) AS maxDonates from posts WHERE user_id = ?");
+            ps.setLong(1, userId);
+            ResultSet rs = ps.executeQuery();
+            double count = 0;
+            if(rs.next()){
+                count = rs.getDouble(1);
+            }
+            return count;
         }
     }
 }

@@ -33,11 +33,17 @@ public class CommentController extends BaseController {
         validateLogin(session);
         User user = (User) session.getAttribute("user");
         String comment = request.getParameter("comment");
-        if(comment.isEmpty() || comment.contains(" ") || comment.contains("\n")){
+        if(comment.isEmpty() || comment.equals(" ") || comment.equals("\n")){
             throw new InvalidCommentException();
         }
         commentDao.putCommentOnPost(comment, postId, user.getId());
         return new SuccessMessage("Comment added successfully", LocalDate.now());
+    }
+
+    @GetMapping(value = "/distinct/{id}")
+    public SuccessMessage getDistinctComments(@PathVariable("id") Long postId) throws SQLException {
+        int count = commentDao.getDistinctComments(postId);
+        return new SuccessMessage(""+count,LocalDate.now());
     }
 
 }

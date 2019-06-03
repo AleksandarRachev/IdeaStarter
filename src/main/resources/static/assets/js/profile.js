@@ -61,9 +61,15 @@ window.addEventListener('DOMContentLoaded', function() {
                             <form method="POST" action="/users/logout" align="right">
                               <button type="submit" class="btn btn-sm btn-primary display-7">Logout</button>
                            </form>
+                            <div id="moneyGathered"></div>
                         </div>
                     </section>
                     <div id="userPosts"></div>`;
+                    if(window.addEventListener) {
+                        window.addEventListener('load',getTotalMoneyGathered(2),false);
+                    } else {
+                        window.attachEvent('onload',getTotalMoneyGathered(2));
+                    }
                     getPostForUser(data.id);
                 }
             }
@@ -88,6 +94,36 @@ function deletePost(postId){
     location.reload();
 }
 
+function getDistinctComments(divId,postId) {
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', 'http://localhost:9999/comments/distinct/'+postId, true);
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4) {
+            if (xhr.status >= 200 && status <= 299) {
+                const data = JSON.parse(xhr.responseText);
+                const content = `<h3>Users commented on this post: ${data.message}</h3>`;
+                document.getElementById(divId).innerHTML += content;
+            }
+        }
+    }
+    xhr.send();
+}
+
+function getTotalMoneyGathered(userId) {
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', 'http://localhost:9999/users/donates/'+userId, true);
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4) {
+            if (xhr.status >= 200 && status <= 299) {
+                const data = JSON.parse(xhr.responseText);
+                const content = `<h2>Total money gathered: ${data.message} lv.</h2>`;
+                document.getElementById('moneyGathered').innerHTML += content;
+            }
+        }
+    }
+    xhr.send();
+}
+
 function getPostForUser(userId) {
     var xhr = new XMLHttpRequest();
     xhr.open('GET', 'http://localhost:9999/posts/'+userId, true);
@@ -104,9 +140,11 @@ function getPostForUser(userId) {
                         imageSrc = "http://localhost:9999/images/posts/"+data[i].imageUrl;
                     }
                     const cid = "comment"+i;
+                    const divId = "counter"+i;
                     const content = `<div class="container">
                                      <div class="row">
                                          <div class="col-lg-8">
+                                             <div id=${divId}></div>
                                              <h1 class="mt-4">${data[i].title}
                                              <button class="btn btn-secondary btn-form display-4" onclick="deletePost(${data[i].id});">Delete</button></h1>
                                              <!-- Author -->
@@ -157,6 +195,12 @@ function getPostForUser(userId) {
                                  </div>`;
                     document.getElementById('userPosts').innerHTML += content;
                     getComments(cid,data[i].id);
+
+                    if(window.addEventListener) {
+                        window.addEventListener('load',getDistinctComments(divId,data[i].id),false);
+                    } else {
+                        window.attachEvent('onload',getDistinctComments(divId,data[i].id));
+                    }
                 }
             }
         }

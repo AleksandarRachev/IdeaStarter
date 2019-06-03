@@ -55,4 +55,17 @@ public class CommentDao {
             ps.execute();
         }
     }
+
+    public int getDistinctComments(long postId) throws SQLException {
+        try (Connection connection = template.getDataSource().getConnection()) {
+            PreparedStatement ps = connection.prepareStatement("SELECT COUNT(DISTINCT (user_id)) AS count from comments WHERE post_id = ?");
+            ps.setLong(1, postId);
+            ResultSet rs = ps.executeQuery();
+            int count = 0;
+            if(rs.next()){
+                count = rs.getInt(1);
+            }
+            return count;
+        }
+    }
 }
