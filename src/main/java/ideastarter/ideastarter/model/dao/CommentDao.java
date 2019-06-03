@@ -68,4 +68,16 @@ public class CommentDao {
             return count;
         }
     }
+
+    public int getTotalComments() throws SQLException {
+        try (Connection connection = template.getDataSource().getConnection()) {
+            PreparedStatement ps = connection.prepareStatement("SELECT COUNT(*) AS comments FROM comments");
+            ResultSet rs = ps.executeQuery();
+            int count = 0;
+            if(rs.next()){
+                count = rs.getInt(1);
+            }
+            return count;
+        }
+    }
 }

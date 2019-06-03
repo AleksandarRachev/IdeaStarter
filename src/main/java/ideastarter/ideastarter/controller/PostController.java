@@ -4,10 +4,7 @@ import ideastarter.ideastarter.model.dao.CategoryDao;
 import ideastarter.ideastarter.model.dao.CommentDao;
 import ideastarter.ideastarter.model.dao.PostDao;
 import ideastarter.ideastarter.model.dao.UserDao;
-import ideastarter.ideastarter.model.dto.CategoryDto;
-import ideastarter.ideastarter.model.dto.ShowPostDto;
-import ideastarter.ideastarter.model.dto.ShowPostNoUserDto;
-import ideastarter.ideastarter.model.dto.ShowUserDto;
+import ideastarter.ideastarter.model.dto.*;
 import ideastarter.ideastarter.model.pojo.Category;
 import ideastarter.ideastarter.model.pojo.Post;
 import ideastarter.ideastarter.model.pojo.User;
@@ -15,6 +12,7 @@ import ideastarter.ideastarter.repository.PostRepository;
 import ideastarter.ideastarter.util.SuccessMessage;
 import ideastarter.ideastarter.util.exception.BaseException;
 import ideastarter.ideastarter.util.exception.PostExistsException;
+import ideastarter.ideastarter.util.exception.PostHasIncomeException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -80,7 +78,11 @@ public class PostController extends BaseController {
 
     @DeleteMapping(value = "/{id}")
     @Transactional
-    public SuccessMessage deletePost(@PathVariable("id") Long postId) throws SQLException {
+    public SuccessMessage deletePost(@PathVariable("id") Long postId) throws SQLException, PostHasIncomeException {
+        ShowPostNoUserDto post = postDao.getPostById(postId);
+        if(post.getDonates() > 0){
+            throw new PostHasIncomeException();
+        }
         commentDao.deleteCommentsByPostId(postId);
         postRepository.deleteById(postId);
         return new SuccessMessage("Post deleted successfully",LocalDate.now());
@@ -103,6 +105,15 @@ public class PostController extends BaseController {
         double donate = Double.parseDouble(request.getParameter("donate"));
         postDao.takeDonation(postId,donate);
         return new SuccessMessage("Donate successful", LocalDate.now());
+    }
+
+    @GetMapping(value = "/info")
+    public GeneralInfoDto getInfo() throws SQLException {
+        GeneralInfoDto generalInfoDto = new GeneralInfoDto();
+        generalInfoDto.setUserCount(userDao.getTotalUsers());
+        generalInfoDto.setPostsCount(postDao.getTotalPosts());
+        generalInfoDto.setCommentsWritten(commentDao.getTotalComments());
+        return generalInfoDto;
     }
 
 }

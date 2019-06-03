@@ -108,4 +108,16 @@ public class UserDao {
             return count;
         }
     }
+
+    public int getTotalUsers() throws SQLException {
+        try (Connection connection = template.getDataSource().getConnection()) {
+            PreparedStatement ps = connection.prepareStatement("SELECT COUNT(*) AS users FROM users");
+            ResultSet rs = ps.executeQuery();
+            int count = 0;
+            if(rs.next()){
+                count = rs.getInt(1);
+            }
+            return count;
+        }
+    }
 }

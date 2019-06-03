@@ -18,15 +18,15 @@ import java.util.List;
 public class PostDao {
 
     @Autowired
-    private JdbcTemplate jdbcTemplate;
+    private JdbcTemplate template;
     @Autowired
-    private UserDao dao;
+    private UserDao userDao;
     @Autowired
     private CommentDao commentDao;
 
     public List<ShowPostNoUserDto> getPostsForUser(long userId) throws SQLException {
         List<ShowPostNoUserDto> posts = new ArrayList<>();
-        try (Connection connection = this.jdbcTemplate.getDataSource().getConnection()) {
+        try (Connection connection = this.template.getDataSource().getConnection()) {
             PreparedStatement ps = connection.prepareStatement("SELECT id,title,description,start_date,end_date,donates,user_id,image_url FROM posts WHERE user_id = ?");
             ps.setLong(1, userId);
             ResultSet rs = ps.executeQuery();
@@ -38,7 +38,7 @@ public class PostDao {
                 post.setStartDate(rs.getDate(4));
                 post.setEndDate(rs.getDate(5));
                 post.setDonates(rs.getDouble(6));
-                post.setUser(dao.getUserById(rs.getLong(7)));
+                post.setUser(userDao.getUserById(rs.getLong(7)));
                 post.setImageUrl(rs.getString(8));
                 posts.add(post);
             }
@@ -48,7 +48,7 @@ public class PostDao {
 
     public List<ShowPostNoUserDto> getAllPosts() throws SQLException {
         List<ShowPostNoUserDto> posts = new ArrayList<>();
-        try (Connection connection = this.jdbcTemplate.getDataSource().getConnection()) {
+        try (Connection connection = this.template.getDataSource().getConnection()) {
             PreparedStatement ps = connection.prepareStatement("SELECT id,title,description,start_date,end_date," +
                     "donates,user_id,image_url FROM posts ORDER BY donates DESC LIMIT 5");
             ResultSet rs = ps.executeQuery();
@@ -60,7 +60,7 @@ public class PostDao {
                 post.setStartDate(rs.getDate(4));
                 post.setEndDate(rs.getDate(5));
                 post.setDonates(rs.getDouble(6));
-                post.setUser(dao.getUserById(rs.getLong(7)));
+                post.setUser(userDao.getUserById(rs.getLong(7)));
                 post.setImageUrl(rs.getString(8));
                 posts.add(post);
             }
@@ -70,7 +70,7 @@ public class PostDao {
 
     public List<CategoryDto> getCategories() throws SQLException {
         List<CategoryDto> categories = new ArrayList<>();
-        try (Connection connection = this.jdbcTemplate.getDataSource().getConnection()) {
+        try (Connection connection = this.template.getDataSource().getConnection()) {
             PreparedStatement ps = connection.prepareStatement("SELECT id,name FROM categories");
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
@@ -84,7 +84,7 @@ public class PostDao {
     }
 
     public int countPostsByTitle(String title) throws SQLException {
-        try (Connection connection = jdbcTemplate.getDataSource().getConnection()) {
+        try (Connection connection = template.getDataSource().getConnection()) {
             PreparedStatement ps = connection.prepareStatement("SELECT COUNT(*) FROM posts WHERE title LIKE ?");
             ps.setString(1, title);
             ResultSet rs = ps.executeQuery();
@@ -97,7 +97,7 @@ public class PostDao {
     }
 
     public ShowPostNoUserDto getPostById(long postId) throws SQLException {
-        try (Connection connection = jdbcTemplate.getDataSource().getConnection()) {
+        try (Connection connection = template.getDataSource().getConnection()) {
             PreparedStatement ps = connection.prepareStatement("SELECT id,title,description,start_date,end_date,donates FROM posts WHERE id = ?");
             ps.setLong(1, postId);
             ResultSet rs = ps.executeQuery();
@@ -115,7 +115,7 @@ public class PostDao {
     }
 
     public void takeDonation(long postId, double donation) throws SQLException {
-        try (Connection connection = jdbcTemplate.getDataSource().getConnection()) {
+        try (Connection connection = template.getDataSource().getConnection()) {
             ShowPostNoUserDto post = getPostById(postId);
             PreparedStatement ps = connection.prepareStatement("UPDATE posts SET donates = ? WHERE id = ?");
             ps.setDouble(1,post.getDonates()+donation);
@@ -127,7 +127,7 @@ public class PostDao {
     public void addImageUrl(String dir, String imageUrl, long postId) throws SQLException {
         Connection connection = null;
         try {
-            connection = jdbcTemplate.getDataSource().getConnection();
+            connection = template.getDataSource().getConnection();
             connection.setAutoCommit(false);
             PreparedStatement ps = connection.prepareStatement("SELECT image_url FROM posts WHERE id = ?");
             ps.setLong(1, postId);
@@ -147,6 +147,18 @@ public class PostDao {
         } finally {
             connection.setAutoCommit(true);
             connection.close();
+        }
+    }
+
+    public int getTotalPosts() throws SQLException {
+        try (Connection connection = template.getDataSource().getConnection()) {
+            PreparedStatement ps = connection.prepareStatement("SELECT COUNT(*) AS posts FROM posts");
+            ResultSet rs = ps.executeQuery();
+            int count = 0;
+            if(rs.next()){
+                count = rs.getInt(1);
+            }
+            return count;
         }
     }
 

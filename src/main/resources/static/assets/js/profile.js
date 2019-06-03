@@ -155,22 +155,6 @@ function getPostForUser(userId) {
                                              <hr>
                                              <p>Active period from ${data[i].startDate} to ${data[i].endDate}</p>
                                              <h3 class="mt-4">Donates: ${data[i].donates} $</h3>
-                                             <div class="container">
-                                                <div class="row justify-content-center">
-                                                </div>
-                                                <div class="row py-2 justify-content-center">
-                                                    <div class="col-12 col-lg-6  col-md-8 " data-form-type="formoid">
-                                                        <form action=${"/posts/donate/"+data[i].id} method="POST" class="mbr-form form-with-styler">
-                                                            <div class="dragArea row">
-                                                                <div class="form-group col" data-for="donate">
-                                                                    <input type="number" min="0" step="0.01" name="donate" placeholder="Amount" data-form-field="Donate" required="required" class="form-control display-7" id="donate">
-                                                                </div>
-                                                                <div class="col-auto input-group-btn"><button type="submit" class="btn btn-primary display-4">Donate</button></div>
-                                                            </div>
-                                                        </form>
-                                                    </div>
-                                                </div>
-                                             </div>
                                              <hr>
                                              <img class="img-fluid rounded" src=${imageSrc}>
                                              <hr>
