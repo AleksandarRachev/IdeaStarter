@@ -88,6 +88,12 @@ public class PostController extends BaseController {
         return new SuccessMessage("Post deleted successfully",LocalDate.now());
     }
 
+    @GetMapping(value = "/top")
+    public List<ShowPostNoUserDto> getTop5Posts(HttpServletResponse response, HttpServletRequest request) throws SQLException {
+        response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
+        return postDao.getTop5Posts();
+    }
+
     @GetMapping(value = "/all")
     public List<ShowPostNoUserDto> getAllPosts(HttpServletResponse response, HttpServletRequest request) throws SQLException {
         response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));

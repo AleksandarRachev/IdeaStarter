@@ -1,7 +1,7 @@
 window.addEventListener('DOMContentLoaded', function() {
     function getInfo() {
         var xhr = new XMLHttpRequest();
-        xhr.open('GET', 'http://localhost:9999/posts/all', true);
+        xhr.open('GET', 'http://localhost:9999/posts/top', true);
         xhr.onreadystatechange = function () {
             if (xhr.readyState === 4) {
                 if (xhr.status >= 200 && status <= 299) {
