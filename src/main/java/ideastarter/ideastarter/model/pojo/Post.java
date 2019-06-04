@@ -22,7 +22,7 @@ public class Post {
     private Long id;
     @Column(unique = true, nullable = false)
     private String title;
-    @Column(nullable = false)
+    @Column(nullable = false,length = 3000)
     private String description;
     @Column(nullable = false)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")

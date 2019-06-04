@@ -3,6 +3,7 @@ package ideastarter.ideastarter.controller;
 import ideastarter.ideastarter.model.dao.CommentDao;
 import ideastarter.ideastarter.model.dto.ShowCommentDto;
 import ideastarter.ideastarter.model.pojo.User;
+import ideastarter.ideastarter.repository.CommentRepository;
 import ideastarter.ideastarter.util.SuccessMessage;
 import ideastarter.ideastarter.util.exception.BaseException;
 import ideastarter.ideastarter.util.exception.InvalidCommentException;
@@ -24,6 +25,8 @@ public class CommentController extends BaseController {
 
     @Autowired
     private CommentDao commentDao;
+    @Autowired
+    private CommentRepository commentRepository;
 
     @GetMapping(value = "/{id}")
     public List<ShowCommentDto> getCommentsForPost(@PathVariable("id") Long postId) throws SQLException {
@@ -47,6 +50,13 @@ public class CommentController extends BaseController {
     public SuccessMessage getDistinctComments(@PathVariable("id") Long postId) throws SQLException {
         int count = commentDao.getDistinctComments(postId);
         return new SuccessMessage(""+count,LocalDate.now());
+    }
+
+    @DeleteMapping(value = "/{id}")
+    public SuccessMessage deleteComment(@PathVariable("id")Long commentId,HttpServletResponse response) throws IOException {
+        commentRepository.deleteById(commentId);
+        response.sendRedirect("http://localhost:9999/posts.html");
+        return new SuccessMessage("Comment deleted",LocalDate.now());
     }
 
 }

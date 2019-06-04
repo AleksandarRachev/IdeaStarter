@@ -79,6 +79,17 @@ document.getElementById("container").innerHTML = null;
     xhr.send();
 }
 
+function deleteComment(commentId){
+    const delComment = confirm("Are you sure you want to delete that comment?");
+    if(delPost === false){
+        return;
+    }
+    const xhr = new XMLHttpRequest();
+    xhr.open("DELETE", "http://localhost:9999/comments/"+commentId, true);
+    xhr.send(null);
+    location.reload();
+}
+
 function getComments(cid,postId) {
     var xhr = new XMLHttpRequest();
     xhr.open('GET', 'http://localhost:9999/comments/'+postId, true);
@@ -99,6 +110,7 @@ function getComments(cid,postId) {
                                          <div class="media-body">
                                              <h5 class="mt-0">${data[i].user.firstName + " " + data[i].user.lastName}</h5>
                                              <p>${data[i].comment}</p>
+                                             <button class="btn btn-secondary btn-form display-4" onclick="deleteComment(${data[i].id});">x</button>
                                          </div>
                                      </div>`;
                     document.getElementById(cid).innerHTML += content;
