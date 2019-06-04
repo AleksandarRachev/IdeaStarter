@@ -3,9 +3,9 @@ function checkLogged() {
     xhr.open('GET', 'http://localhost:9999/users/profile', true);
     xhr.onreadystatechange = function () {
         if (xhr.readyState === 4) {
-            if (xhr.status >= 200 && status <= 299) {
+            if (xhr.status >= 200 && xhr.status <= 299) {
                 const data = JSON.parse(xhr.responseText);
-                if(data.id == null){
+                if(data == null){
                     alert("You are not logged in.")
                     xhr.abort();
                 }
@@ -24,7 +24,7 @@ window.addEventListener('DOMContentLoaded', function() {
         xhr.open('GET', 'http://localhost:9999/users/profile', true);
         xhr.onreadystatechange = function () {
             if (xhr.readyState === 4) {
-                if (xhr.status >= 200 && status <= 299) {
+                if (xhr.status >= 200 && xhr.status <= 299) {
                     const data = JSON.parse(xhr.responseText);
                     var imageSrc;
                     if(data.imageUrl == null){

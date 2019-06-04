@@ -7,7 +7,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.io.IOException;
 import java.time.LocalDate;
 
 @RestController
@@ -30,8 +32,9 @@ public abstract class BaseController {
         return new ErrorMessage(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR.value(), LocalDate.now());
     }
 
-    void validateLogin(HttpSession session) throws NotLoggedException {
+    void validateLogin(HttpSession session, HttpServletResponse response) throws NotLoggedException, IOException {
         if (session.getAttribute("user") == null) {
+            response.sendRedirect("http://localhost:9999/login.html");
             throw new NotLoggedException();
         }
     }

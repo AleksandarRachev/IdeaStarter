@@ -12,7 +12,9 @@ import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -27,7 +29,7 @@ public class UserController extends BaseController {
     private UserDao userDao;
 
     @PostMapping(value = "/register")
-    public SuccessMessage register(HttpSession session, HttpServletRequest request) throws BaseException {
+    public SuccessMessage register(HttpSession session, HttpServletRequest request,HttpServletResponse response) throws BaseException, IOException {
         String email = request.getParameter("email");
         checkEmail(email);
         String password = request.getParameter("password");
@@ -39,6 +41,7 @@ public class UserController extends BaseController {
         }
         int count = this.userRepository.countUserByEmail(email);
         if (count > 0) {
+            response.sendRedirect("http://localhost:9999/register.html");
             throw new UserExistsException();
         }
         if (!password.equals(password2)) {
@@ -52,11 +55,12 @@ public class UserController extends BaseController {
         userRepository.save(user);
         request.getSession().setAttribute("user", user);
         session.setMaxInactiveInterval((60 * 60));
+        response.sendRedirect("http://localhost:9999/profile.html");
         return new SuccessMessage("Register successful", LocalDate.now());
     }
 
     @PostMapping(value = "/login")
-    public ShowUserDto login(HttpSession session, HttpServletRequest request) throws BaseException {
+    public ShowUserDto login(HttpSession session, HttpServletRequest request,HttpServletResponse response) throws BaseException, IOException {
         String email = request.getParameter("email");
         String password = request.getParameter("password");
         if (email.isEmpty() || password.isEmpty()) {
@@ -65,11 +69,13 @@ public class UserController extends BaseController {
         int count = userRepository.countUserByEmail(email);
         User user = userRepository.findByEmail(email);
         if (count < 1 || !BCrypt.checkpw(password, user.getPassword())) {
+            response.sendRedirect("http://localhost:9999/login.html");
             throw new WrongCredentialsException();
         }
 
         session.setMaxInactiveInterval(60 * 60);
         session.setAttribute("user", user);
+        response.sendRedirect("http://localhost:9999/profile.html");
         return new ShowUserDto(user.getId(), user.getFirstName(), user.getLastName(), user.getEmail(), user.getImageUrl());
     }
 
@@ -81,15 +87,16 @@ public class UserController extends BaseController {
     }
 
     @PostMapping(value = "/logout")
-    public SuccessMessage logoutUser(HttpSession session) throws NotLoggedException {
-        validateLogin(session);
+    public SuccessMessage logoutUser(HttpSession session, HttpServletResponse response) throws NotLoggedException, IOException {
+        validateLogin(session,response);
         session.invalidate();
+        response.sendRedirect("http://localhost:9999");
         return new SuccessMessage("You logged out",LocalDate.now());
     }
 
     @GetMapping(value = "/profile")
-    public ShowUserDto getUser(HttpSession session) throws NotLoggedException {
-        validateLogin(session);
+    public ShowUserDto getUser(HttpSession session,HttpServletResponse response) throws NotLoggedException, IOException {
+        validateLogin(session,response);
         User logged = (User) session.getAttribute("user");
         ShowUserDto user = new ShowUserDto();
         user.setId(logged.getId());

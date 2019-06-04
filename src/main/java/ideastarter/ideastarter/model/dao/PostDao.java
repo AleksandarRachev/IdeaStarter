@@ -90,6 +90,29 @@ public class PostDao {
         return posts;
     }
 
+    public List<ShowPostNoUserDto> getPostsPerCategory(long categoryId) throws SQLException {
+        List<ShowPostNoUserDto> posts = new ArrayList<>();
+        try (Connection connection = this.template.getDataSource().getConnection()) {
+            PreparedStatement ps = connection.prepareStatement("SELECT id,title,description,start_date,end_date,donates,user_id,image_url" +
+                    " FROM posts WHERE category_id = ?");
+            ps.setLong(1,categoryId);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                ShowPostNoUserDto post = new ShowPostNoUserDto();
+                post.setId(rs.getLong(1));
+                post.setTitle(rs.getString(2));
+                post.setDescription(rs.getString(3));
+                post.setStartDate(rs.getDate(4));
+                post.setEndDate(rs.getDate(5));
+                post.setDonates(rs.getDouble(6));
+                post.setUser(userDao.getUserById(rs.getLong(7)));
+                post.setImageUrl(rs.getString(8));
+                posts.add(post);
+            }
+        }
+        return posts;
+    }
+
     public List<CategoryDto> getCategories() throws SQLException {
         List<CategoryDto> categories = new ArrayList<>();
         try (Connection connection = this.template.getDataSource().getConnection()) {

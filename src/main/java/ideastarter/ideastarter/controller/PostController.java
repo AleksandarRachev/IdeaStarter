@@ -20,6 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.transaction.Transactional;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -42,12 +43,13 @@ public class PostController extends BaseController {
     private CommentDao commentDao;
 
     @PostMapping
-    public ShowPostDto addPost(HttpServletResponse response,HttpServletRequest request, HttpSession session) throws BaseException, SQLException, ParseException {
-        validateLogin(session);
+    public ShowPostDto addPost(HttpServletResponse response,HttpServletRequest request, HttpSession session) throws BaseException, SQLException, ParseException, IOException {
+        validateLogin(session,response);
         Post post = new Post();
         User user = (User) session.getAttribute("user");
         int count = postDao.countPostsByTitle(request.getParameter("title"));
         if (count > 0) {
+            response.sendRedirect("http://localhost:9999/postExists.html");
             throw new PostExistsException();
         }
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -68,6 +70,7 @@ public class PostController extends BaseController {
         post.setUser(user);
         postRepository.save(post);
         ShowUserDto showUser = userDao.getUserById(user.getId());
+        response.sendRedirect("http://localhost:9999/posts.html");
         return new ShowPostDto(post.getId(), post.getTitle(), post.getDescription(), post.getStartDate(), post.getEndDate(), showUser);
     }
 
@@ -78,13 +81,14 @@ public class PostController extends BaseController {
 
     @DeleteMapping(value = "/{id}")
     @Transactional
-    public SuccessMessage deletePost(@PathVariable("id") Long postId) throws SQLException, PostHasIncomeException {
+    public SuccessMessage deletePost(@PathVariable("id") Long postId,HttpServletResponse response) throws SQLException, PostHasIncomeException, IOException {
         ShowPostNoUserDto post = postDao.getPostById(postId);
         if(post.getDonates() > 0){
             throw new PostHasIncomeException();
         }
         commentDao.deleteCommentsByPostId(postId);
         postRepository.deleteById(postId);
+        response.sendRedirect("http://localhost:9999/profile.html");
         return new SuccessMessage("Post deleted successfully",LocalDate.now());
     }
 
@@ -107,9 +111,10 @@ public class PostController extends BaseController {
     }
 
     @PostMapping(value = "/donate/{id}")
-    public SuccessMessage donateToPost(@PathVariable("id") Long postId, HttpServletRequest request) throws SQLException {
+    public SuccessMessage donateToPost(@PathVariable("id") Long postId, HttpServletRequest request,HttpServletResponse response) throws SQLException, IOException {
         double donate = Double.parseDouble(request.getParameter("donate"));
         postDao.takeDonation(postId,donate);
+        response.sendRedirect("http://localhost:9999/posts.html");
         return new SuccessMessage("Donate successful", LocalDate.now());
     }
 
@@ -120,6 +125,12 @@ public class PostController extends BaseController {
         generalInfoDto.setPostsCount(postDao.getTotalPosts());
         generalInfoDto.setCommentsWritten(commentDao.getTotalComments());
         return generalInfoDto;
+    }
+
+    @GetMapping(value = "/category/{id}")
+    public List<ShowPostNoUserDto> getAllPosts(@PathVariable("id")Long categId, HttpServletResponse response, HttpServletRequest request) throws SQLException {
+        response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
+        return postDao.getPostsPerCategory(categId);
     }
 
 }

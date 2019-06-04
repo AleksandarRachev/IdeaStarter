@@ -11,7 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
@@ -29,14 +31,15 @@ public class CommentController extends BaseController {
     }
 
     @PostMapping(value = "/{id}")
-    public SuccessMessage putCommentOnPost(@PathVariable("id") Long postId, HttpSession session, HttpServletRequest request) throws BaseException, SQLException{
-        validateLogin(session);
+    public SuccessMessage putCommentOnPost(@PathVariable("id") Long postId, HttpSession session, HttpServletRequest request, HttpServletResponse response) throws BaseException, SQLException, IOException {
+        validateLogin(session,response);
         User user = (User) session.getAttribute("user");
         String comment = request.getParameter("comment");
         if(comment.isEmpty() || comment.equals(" ") || comment.equals("\n")){
             throw new InvalidCommentException();
         }
         commentDao.putCommentOnPost(comment, postId, user.getId());
+        response.sendRedirect("http://localhost:9999/posts.html");
         return new SuccessMessage("Comment added successfully", LocalDate.now());
     }
 

@@ -11,6 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.FileInputStream;
@@ -30,14 +31,15 @@ public class ImageController extends BaseController {
     private PostDao postDao;
 
     @PostMapping
-    public SuccessMessage userImageUpload(@RequestPart(value = "image") MultipartFile file, HttpSession session) throws SQLException, NotLoggedException, IOException {
-        validateLogin(session);
+    public SuccessMessage userImageUpload(@RequestPart(value = "image") MultipartFile file, HttpSession session, HttpServletResponse response) throws SQLException, NotLoggedException, IOException {
+        validateLogin(session,response);
         User user = (User) session.getAttribute("user");
         String name = user.getId() + System.currentTimeMillis() + ".png";
         File newImage = new File(IMAGE_PATH+name);
         file.transferTo(newImage);
         userDao.addImageUrl(IMAGE_PATH,name,user.getId());
         user.setImageUrl(name);
+        response.sendRedirect("http://localhost:9999/profile.html");
         return new SuccessMessage("Image uploaded", LocalDate.now());
     }
 
@@ -72,8 +74,8 @@ public class ImageController extends BaseController {
     }
 
     @DeleteMapping
-    public SuccessMessage deleteImage(HttpSession session) throws ImageMissingException, SQLException, NotLoggedException {
-        validateLogin(session);
+    public SuccessMessage deleteImage(HttpSession session,HttpServletResponse response) throws ImageMissingException, SQLException, NotLoggedException, IOException {
+        validateLogin(session,response);
         User user = (User) session.getAttribute("user");
         userDao.deleteImage(IMAGE_PATH, user);
         return new SuccessMessage("Image deleted", LocalDate.now());

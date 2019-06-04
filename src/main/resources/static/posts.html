@@ -22,7 +22,7 @@
   <script src="assets/js/posts.js"></script>
   
 </head>
-<body>
+<body onload="getInfo('http://localhost:9999/posts/all')">
   <section class="menu cid-qTkzRZLJNu" once="menu" id="menu1-5">
     <nav class="navbar navbar-expand beta-menu navbar-dropdown align-items-center navbar-fixed-top navbar-toggleable-sm">
         <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -55,7 +55,17 @@
             <script src="assets/js/profile.js"></script>
         </div>
     </nav>
-</section><br><br>
+</section><br><br><br><br>
+  <div class="container">
+      <h4>Category</h4>
+      <select onchange="getInfo(this.options[this.selectedIndex].value);">
+          <option value="http://localhost:9999/posts/all">All</option>
+          <option value="http://localhost:9999/posts/category/1">Travel</option>
+          <option value="http://localhost:9999/posts/category/2">Science</option>
+          <option value="http://localhost:9999/posts/category/3">Sports</option>
+          <option value="http://localhost:9999/posts/category/4">Technology</option>
+      </select>
+  ​</div>
 
 <div id="container"></div>
 

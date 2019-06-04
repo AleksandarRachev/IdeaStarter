@@ -6,7 +6,7 @@
 
 body {
   font-style: normal;
-  line-height: 1.5;
+  line-height: 1.0;
 }
 .mbr-section-title {
   font-style: normal;
@@ -104,7 +104,7 @@ body {
   -moz-transition: all 0.3s ease-in-out;
   transition: all 0.3s ease-in-out;
   padding: 0.6rem 1.5rem;
-  border-radius: 3px;
+  border-radius: 20px;
 }
 .btn-md {
   font-weight: 500;
